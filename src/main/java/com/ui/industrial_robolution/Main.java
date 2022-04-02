@@ -1,5 +1,8 @@
 package com.ui.industrial_robolution;
 
+import com.game.industrial_robolution.FixedLevels;
+import com.game.industrial_robolution.Level;
+import com.game.industrial_robolution.Tile;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -10,8 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class Main extends Application {
     @Override
@@ -57,5 +58,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch();
+
     }
 }

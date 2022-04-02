@@ -11,6 +11,9 @@ import javafx.scene.text.Font;
 public class MenuFX {
 
     private final GridPane rootPane;
+    private final Label levelLabel;
+    private Button levelBtn;
+    private Button customLevelBtn;
 
     public MenuFX() {
 
@@ -20,13 +23,14 @@ public class MenuFX {
         rootPane.setAlignment(Pos.CENTER);
         rootPane.setStyle("-fx-background-color: #343A40");
         rootPane.setHgap(20);
+        rootPane.setVgap(30);
 
         //****** Title ******
 
-        Label levelLabel = new Label("Choose Your Level:");
+        levelLabel = new Label("Choose Your Level:");
         levelLabel.setFont(Font.font("Agency FB", 50));
         levelLabel.setStyle("-fx-text-fill: #eeeaa9");
-        levelLabel.setPadding(new Insets(0, 0, 50, 0));
+        levelLabel.setPadding(new Insets(0, 0, 20, 0));
         rootPane.add(levelLabel, 1, 1);
         rootPane.setHalignment(levelLabel, HPos.CENTER);
         rootPane.setColumnSpan(levelLabel, 5);
@@ -37,15 +41,23 @@ public class MenuFX {
 
         int levelCount = 0;
 
-        for(String level : levels) {
+        for (String level : levels) {
             levelCount++;
-            Button levelBtn = new Button();
+            levelBtn = new Button();
             levelBtn.setText(level.toUpperCase());
             levelBtn.setFont(Font.font("Agency FB", 30));
             levelBtn.setStyle("-fx-background-color: #73688b; -fx-text-fill: #eeeaa9");
             rootPane.add(levelBtn, levelCount, 2);
             rootPane.setHalignment(levelBtn, HPos.CENTER);
         }
+
+        customLevelBtn = new Button("MAKE YOUR OWN");
+        customLevelBtn.setFont(Font.font("Agency FB", 30));
+        customLevelBtn.setStyle("-fx-background-color: #73688b; -fx-text-fill: #eeeaa9");
+        rootPane.add(customLevelBtn, 1, 3);
+        rootPane.setColumnSpan(customLevelBtn, 5);
+        rootPane.setHalignment(customLevelBtn, HPos.CENTER);
+
     }
 
     public GridPane getRootPane() {
