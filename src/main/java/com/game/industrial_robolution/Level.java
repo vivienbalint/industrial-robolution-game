@@ -2,10 +2,13 @@ package com.game.industrial_robolution;
 
 public class Level {
 
-    int row;
-    int col;
-    int stationNumber;
-    Tile[][] matrix;
+    private final int row;
+    private final int col;
+    private final int stationNumber;
+    private int stationNumberBuiltOn = 0;
+    private Tile[][] matrix;
+    private int[] pos = new int[]{0, 0};
+    private boolean isWon = false;
 
     //****** Constructor ******
 
@@ -19,9 +22,21 @@ public class Level {
             throw new IllegalArgumentException("Row and Col must be between 6 and 8, stationNumber must be between 2 and 5");
     }
 
- /*   //****** Setters ******
+    //****** Setters ******
 
-    public void setRow(int row) {
+    public void setStationNumberBuiltOn(int stationNumberBuiltOn) {
+        this.stationNumberBuiltOn = stationNumberBuiltOn;
+    }
+
+    public void setPos(int[] pos) {
+        this.pos = pos;
+    }
+
+    public void setIsWon(boolean isWon) {
+        this.isWon = isWon;
+    }
+
+    /*   public void setRow(int row) {
         if(row > 5 && row < 9) {
             this.row = row;
         } else
@@ -56,7 +71,19 @@ public class Level {
         return stationNumber;
     }
 
+    public int getStationNumberBuiltOn() {
+        return stationNumberBuiltOn;
+    }
+
     public Tile[][] getMatrix() {
         return matrix;
+    }
+
+    public int[] getPos() {
+        return pos;
+    }
+
+    public boolean getIsWon() {
+        return isWon;
     }
 }

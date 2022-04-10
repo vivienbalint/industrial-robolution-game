@@ -1,5 +1,7 @@
 package com.ui.industrial_robolution;
 
+import com.game.industrial_robolution.FixedLevels;
+import com.game.industrial_robolution.Level;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -41,7 +43,9 @@ public class MenuFX {
 
         int levelCount = 0;
 
+
         for (String level : levels) {
+
             levelCount++;
             levelBtn = new Button();
             levelBtn.setText(level.toUpperCase());
@@ -49,6 +53,12 @@ public class MenuFX {
             levelBtn.setStyle("-fx-background-color: #73688b; -fx-text-fill: #eeeaa9");
             rootPane.add(levelBtn, levelCount, 2);
             rootPane.setHalignment(levelBtn, HPos.CENTER);
+
+            levelBtn.setOnAction(e -> {
+                FixedLevelsFX fixedLevels = new FixedLevelsFX();
+                fixedLevels.drawLevel(level);
+                levelBtn.getScene().setRoot(fixedLevels.getLevelPane());
+            });
         }
 
         customLevelBtn = new Button("MAKE YOUR OWN");

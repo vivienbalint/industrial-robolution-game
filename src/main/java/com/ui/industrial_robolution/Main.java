@@ -26,7 +26,7 @@ public class Main extends Application {
 
         //****** Scene ******
 
-        Scene scene = new Scene(layout, 800, 700);
+        Scene scene = new Scene(layout, 1000, 800);
 
         //****** Title ******
 
@@ -57,6 +57,7 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+
         launch();
 
     }

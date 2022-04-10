@@ -2,13 +2,11 @@ package com.game.industrial_robolution;
 
 public interface IRobot {
 
-    int[] goToStartingPos(Level level);
+    void goToStartingPos();
 
-    int[] go(int[] startingPos);
+    void go(String direction);
 
-    void build();
+    void throwDynamite(String direction);
 
-    void throwDynamite();
-
-    void startOver();
+    void buildBridge(String direction);
 }
