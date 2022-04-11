@@ -1,0 +1,30 @@
+package com.ui.industrial_robolution;
+
+import javafx.scene.Scene;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
+
+public class YouWonFX {
+    private final GridPane wonPane;
+
+    public YouWonFX() {
+        //****** Layout ******
+
+        wonPane = new GridPane();
+        wonPane.setAlignment(Pos.CENTER);
+        wonPane.setStyle("-fx-background-color: #343A40");
+
+        //****** Text ******
+
+        Label wonLabel = new Label("YOU WON!");
+        wonLabel.setFont(Font.font("Agency FB", 60));
+        wonLabel.setStyle("-fx-text-fill: #eeeaa9");
+        wonPane.add(wonLabel, 0, 0);
+    }
+
+    public GridPane getWonPane() {
+        return wonPane;
+    }
+}

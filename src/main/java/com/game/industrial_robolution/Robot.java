@@ -1,23 +1,25 @@
 package com.game.industrial_robolution;
 
-import com.ui.industrial_robolution.FixedLevelsFX;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-
 public class Robot implements IRobot {
 
     Level level;
     private Tile[][] levelMatrix;
     private int matrixRow;
     private int matrixCol;
-    private String msg = "You can't go that way :)";
+    private final String msg = "You can't go that way :)";
+    private boolean isDoable = false;
+    private boolean isReset = false;
 
     public Robot(Level level) {
         this.level = level;
     }
 
-    public Level getLevel() {
-        return level;
+    public boolean getIsReset() {
+        return isReset;
+    }
+
+    public void setReset(boolean reset) {
+        isReset = reset;
     }
 
     @Override
@@ -28,7 +30,8 @@ public class Robot implements IRobot {
         matrixCol = level.getCol();
         int[] pos = {0, 0};
 
-      outer:  for (int row = 0; row < matrixRow; row++) {
+        outer:
+        for (int row = 0; row < matrixRow; row++) {
             for (int col = 0; col < matrixCol; col++) {
                 if (levelMatrix[row][col].getType().equals("station")) {
                     pos[0] = row;
@@ -43,7 +46,7 @@ public class Robot implements IRobot {
     }
 
     @Override
-    public void go(String direction) {
+    public boolean go(String direction) {
 
         levelMatrix = level.getMatrix();
         matrixRow = level.getRow();
@@ -58,22 +61,26 @@ public class Robot implements IRobot {
                     if (levelMatrix[row - 1][col].getIsBuildable() && !levelMatrix[row - 1][col].getColor().equals("forestGreen")) {
                         pos[0] = row - 1;
                         level.setPos(pos);
+                        isDoable = true;
                         if (levelMatrix[row - 1][col].getType().equals("station")) {
                             levelMatrix[row - 1][col].setColor("sienna");
                             incrementStationNumber();
                             if (level.getStationNumberBuiltOn() == level.getStationNumber()) {
                                 level.setIsWon(true);
-                                //TODO
                             }
                         } else levelMatrix[row - 1][col].setColor("forestGreen");
-                    } else if(levelMatrix[row - 1][col].getType().equals("water")) {
+                    } else if (levelMatrix[row - 1][col].getType().equals("water")) {
                         setOriginalColor();
                         goToStartingPos();
+                        isDoable = false;
+                        setReset(true);
                     } else {
                         System.out.println(msg);
+                        isDoable = false;
                     }
                 } else {
                     System.out.println(msg);
+                    isDoable = false;
                 }
             }
             case "east" -> {
@@ -81,22 +88,26 @@ public class Robot implements IRobot {
                     if (levelMatrix[row][col + 1].getIsBuildable() && !levelMatrix[row][col + 1].getColor().equals("forestGreen")) {
                         pos[1] = col + 1;
                         level.setPos(pos);
+                        isDoable = true;
                         if (levelMatrix[row][col + 1].getType().equals("station")) {
                             incrementStationNumber();
                             levelMatrix[row][col + 1].setColor("sienna");
                             if (level.getStationNumberBuiltOn() == level.getStationNumber()) {
                                 level.setIsWon(true);
-                                //TODO
                             }
                         } else levelMatrix[row][col + 1].setColor("forestGreen");
-                    }  else if(levelMatrix[row][col + 1].getType().equals("water")) {
+                    } else if (levelMatrix[row][col + 1].getType().equals("water")) {
                         setOriginalColor();
                         goToStartingPos();
-                } else {
+                        isDoable = false;
+                        setReset(true);
+                    } else {
                         System.out.println(msg);
-                }
+                        isDoable = false;
+                    }
                 } else {
                     System.out.println(msg);
+                    isDoable = false;
                 }
             }
             case "west" -> {
@@ -104,22 +115,26 @@ public class Robot implements IRobot {
                     if (levelMatrix[row][col - 1].getIsBuildable() && !levelMatrix[row][col - 1].getColor().equals("forestGreen")) {
                         pos[1] = col - 1;
                         level.setPos(pos);
+                        isDoable = true;
                         if (levelMatrix[row][col - 1].getType().equals("station")) {
                             incrementStationNumber();
                             levelMatrix[row][col - 1].setColor("sienna");
                             if (level.getStationNumberBuiltOn() == level.getStationNumber()) {
                                 level.setIsWon(true);
-                                //TODO
                             }
                         } else levelMatrix[row][col - 1].setColor("forestGreen");
-                    } else if(levelMatrix[row][col - 1].getType().equals("water")) {
+                    } else if (levelMatrix[row][col - 1].getType().equals("water")) {
                         setOriginalColor();
                         goToStartingPos();
+                        isDoable = false;
+                        setReset(true);
                     } else {
                         System.out.println(msg);
+                        isDoable = false;
                     }
                 } else {
                     System.out.println(msg);
+                    isDoable = false;
                 }
             }
             case "south" -> {
@@ -127,36 +142,41 @@ public class Robot implements IRobot {
                     if (levelMatrix[row + 1][col].getIsBuildable() && !levelMatrix[row + 1][col].getColor().equals("forestGreen")) {
                         pos[0] = row + 1;
                         level.setPos(pos);
+                        isDoable = true;
                         if (levelMatrix[row + 1][col].getType().equals("station")) {
                             incrementStationNumber();
                             levelMatrix[row + 1][col].setColor("sienna");
                             if (level.getStationNumberBuiltOn() == level.getStationNumber()) {
                                 level.setIsWon(true);
-                                //TODO
                             }
                         } else levelMatrix[row + 1][col].setColor("forestGreen");
-                    } else if(levelMatrix[row + 1][col].getType().equals("water")) {
-                         setOriginalColor();
-                         goToStartingPos();
+                    } else if (levelMatrix[row + 1][col].getType().equals("water")) {
+                        setOriginalColor();
+                        goToStartingPos();
+                        isDoable = false;
+                        setReset(true);
                     } else {
                         System.out.println(msg);
+                        isDoable = false;
                     }
                 } else {
                     System.out.println(msg);
+                    isDoable = false;
                 }
             }
             default -> throw new IllegalArgumentException("Direction must be north/east/west/south");
         }
+        return isDoable;
     }
 
     @Override
-    public void throwDynamite(String direction) {
-        setToBuildable("rock", direction);
+    public boolean throwDynamite(String direction) {
+        return isDoable = setToBuildable("rock", direction);
     }
 
     @Override
-    public void buildBridge(String direction) {
-        setToBuildable("water", direction);
+    public boolean buildBridge(String direction) {
+        return isDoable = setToBuildable("water", direction);
     }
 
     private void incrementStationNumber() {
@@ -186,26 +206,7 @@ public class Robot implements IRobot {
         }
     }
 
-  /*  private void changeColor(int row, int col) {
-
-
-        levelMatrix = level.getMatrix();
-
-        String originalColor = levelMatrix[row][col].getColor();
-        System.out.println("original color = " + originalColor);
-        levelMatrix[row][col].setColor("crimson");
-        System.out.println("crimson = " + levelMatrix[row][col].getColor());
-
-        try {
-            Thread.sleep(2000);
-            levelMatrix[row][col].setColor(originalColor);
-            System.out.println("delayed color = " + levelMatrix[row][col].getColor());
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-        }
-    } */
-
-    private void setToBuildable(String type, String direction) {
+    private boolean setToBuildable(String type, String direction) {
 
         levelMatrix = level.getMatrix();
         matrixRow = level.getRow();
@@ -215,57 +216,66 @@ public class Robot implements IRobot {
         int row = pos[0];
         int col = pos[1];
 
-        switch(direction) {
-            case("north") -> {
+        switch (direction) {
+            case ("north") -> {
                 if (row - 1 >= 0) {
                     if (levelMatrix[row - 1][col].getType().equals(type)) {
                         levelMatrix[row - 1][col].setBuildable(true);
-                        go(direction);
+                        isDoable = go(direction);
                     } else {
                         System.out.println(msg);
+                        isDoable = false;
                     }
                 } else {
                     System.out.println(msg);
+                    isDoable = false;
                 }
             }
             case "east" -> {
                 if (col + 1 < matrixCol) {
                     if (levelMatrix[row][col + 1].getType().equals(type)) {
                         levelMatrix[row][col + 1].setBuildable(true);
-                        go(direction);
+                        isDoable = go(direction);
                     } else {
                         System.out.println(msg);
+                        isDoable = false;
                     }
                 } else {
                     System.out.println(msg);
+                    isDoable = false;
                 }
             }
             case "west" -> {
                 if (col - 1 >= 0) {
                     if (levelMatrix[row][col - 1].getType().equals(type)) {
                         levelMatrix[row][col - 1].setBuildable(true);
-                        go(direction);
+                        isDoable = go(direction);
                     } else {
                         System.out.println(msg);
+                        isDoable = false;
                     }
                 } else {
                     System.out.println(msg);
+                    isDoable = false;
                 }
             }
             case "south" -> {
                 if (row + 1 < level.getRow()) {
                     if (levelMatrix[row + 1][col].getType().equals(type)) {
                         levelMatrix[row + 1][col].setBuildable(true);
-                        go(direction);
+                        isDoable = go(direction);
                     } else {
                         System.out.println(msg);
+                        isDoable = false;
                     }
                 } else {
                     System.out.println(msg);
+                    isDoable = false;
                 }
             }
             default -> throw new IllegalArgumentException("Direction must be north/east/west/south");
         }
+        return isDoable;
     }
 
 }

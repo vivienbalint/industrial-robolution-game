@@ -41,21 +41,16 @@ public class CommandsFX {
     }
 
     private StackPane getEmptyBtn(int timeToUse) {
-        if(timeToUse >= 0 && timeToUse <= 20) {
-        commandBtn = new StackPane();
-            Rectangle rectangle = new Rectangle(80, 80);
+        if (timeToUse >= 0 && timeToUse <= 20) {
+            commandBtn = new StackPane();
+            Rectangle rectangle = new Rectangle(80, 80, Color.valueOf("#eeeaa9"));
             commandBtn.getChildren().add(rectangle);
             commandBtn.setPadding(new Insets(0, 10, 0, 0));
             rectangle.setArcWidth(80);
             rectangle.setArcHeight(80);
             rectangle.setStroke(Color.BLACK);
-        if (timeToUse == 0) {
-            rectangle.setFill(Color.DIMGRAY);
-        } else {
-           rectangle.setFill(Color.valueOf("#eeeaa9"));
-        }
-        return commandBtn;}
-        else throw new IllegalArgumentException("TimeToUse can only be between 0 and 20");
+            return commandBtn;
+        } else throw new IllegalArgumentException("TimeToUse can only be between 0 and 20");
     }
 
 }

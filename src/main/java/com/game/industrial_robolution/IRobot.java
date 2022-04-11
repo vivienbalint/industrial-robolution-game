@@ -4,9 +4,9 @@ public interface IRobot {
 
     void goToStartingPos();
 
-    void go(String direction);
+    boolean go(String direction);
 
-    void throwDynamite(String direction);
+    boolean throwDynamite(String direction);
 
-    void buildBridge(String direction);
+    boolean buildBridge(String direction);
 }

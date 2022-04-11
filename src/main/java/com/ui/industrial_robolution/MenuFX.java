@@ -1,7 +1,5 @@
 package com.ui.industrial_robolution;
 
-import com.game.industrial_robolution.FixedLevels;
-import com.game.industrial_robolution.Level;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
