@@ -28,6 +28,10 @@ public class Level {
         this.stationNumberBuiltOn = stationNumberBuiltOn;
     }
 
+    public void setMatrix(Tile[][] matrix) {
+        this.matrix = matrix;
+    }
+
     public void setPos(int[] pos) {
         this.pos = pos;
     }

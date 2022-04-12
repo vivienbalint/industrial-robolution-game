@@ -2,7 +2,7 @@ package com.game.industrial_robolution;
 
 public class FixedLevels {
 
-    private static Tile getTile(String type) {
+    public static Tile getTile(String type) {
         switch(type) {
             case "r" -> {
                 return new Tile("rock", false, "grey");

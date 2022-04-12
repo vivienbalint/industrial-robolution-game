@@ -1,9 +1,6 @@
 package com.ui.industrial_robolution;
 
-import com.game.industrial_robolution.FixedLevels;
-import com.game.industrial_robolution.Level;
-import com.game.industrial_robolution.Robot;
-import com.game.industrial_robolution.Tile;
+import com.game.industrial_robolution.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -68,12 +65,15 @@ public class FixedLevelsFX {
 
         //****** Get matrix ******
 
+        InfiniteLevel infiniteLevel = new InfiniteLevel();
+
         switch (levelDifficulty) {
             case "novice" -> currentLevel = FixedLevels.getNoviceLevel();
             case "adept" -> currentLevel = FixedLevels.getAdeptLevel();
             case "expert" -> currentLevel = FixedLevels.getExpertLevel();
             case "master" -> currentLevel = FixedLevels.getMasterLevel();
-            default -> throw new IllegalArgumentException("Level difficulty can only be novice/adept/expert/master.");
+            case "infinite" -> currentLevel = new Level(8, 8, 4, infiniteLevel.generateMatrix(8, 8, 4, true));
+            default -> throw new IllegalArgumentException("Level difficulty can only be novice/adept/expert/master/infinite.");
         }
 
         currentMatrix = currentLevel.getMatrix();
@@ -174,7 +174,6 @@ public class FixedLevelsFX {
         robot = new Robot(currentLevel);
 
         for (String direction : directions) {
-
             if (command.equals(direction)) {
                 commandBtn.setOnMouseClicked(e -> {
                     {
@@ -186,7 +185,7 @@ public class FixedLevelsFX {
                                     if (isDoable) {
                                         commandCount.replace(direction, timeToUse - 1);
                                         commandCountLabel.setText(commandCount.get(direction) + " x");
-                                        if(currentLevel.getIsWon()) {
+                                        if (currentLevel.getIsWon()) {
                                             commandBtn.getScene().setRoot(wonPage.getWonPane());
                                         }
                                     } else if (robot.getIsReset()) {
@@ -215,7 +214,6 @@ public class FixedLevelsFX {
                                     commandCountLabel.setText(commandCount.get(direction) + " x");
                                 }
                             }
-
                         } else actionsInLoop.add(direction);
                     }
 
@@ -302,91 +300,81 @@ public class FixedLevelsFX {
         stopBtn.setOnMouseClicked(e -> {
             isStopBtnClicked = true;
             int currentLoop = 0;
-            boolean isReduceable = false;
+            boolean loopHasRun = false;
+            boolean commandHasRun = false;
             if (isLoopBtnClicked) {
                 isLoopBtnClicked = false;
                 while (currentLoop < timeToLoop) {
                     for (int idx = 0; idx < actionsInLoop.size(); idx++) {
-                        if (idx > 0) {
+                        if (idx > 0 || actionsInLoop.get(idx).equals("dynamite") || actionsInLoop.get(idx).equals("bridge")) {
                             for (String direction : directions) {
                                 if (actionsInLoop.get(idx).equals(direction) && !actionsInLoop.get(idx - 1).equals("dynamite") && !actionsInLoop.get(idx - 1).equals("bridge")) {
-                                    if (commandCount.get(direction) > 0) {
+                                    if (commandCount.get(direction) > 0 && !loopHasRun) {
                                         boolean isDoable = robot.go(direction);
-                                        if (isDoable && isReduceable) {
+                                        if (isDoable && !commandHasRun) {
+                                            int[] pos = currentLevel.getPos();
                                             commandCount.replace(direction, commandCount.get(direction) - 1);
-                                            isReduceable = false;
-                                            if(currentLevel.getIsWon()) {
+                                            commandHasRun = true;
+                                            loopHasRun = true;
+                                            if (currentLevel.getIsWon()) {
                                                 stopBtn.getScene().setRoot(wonPage.getWonPane());
                                             }
                                         } else if (robot.getIsReset()) {
                                             setOriginalCommandCount(levelDiff);
-                                        } else isReduceable = true;
+                                        }
+                                    } else if (loopHasRun) {
+                                        robot.go(direction);
                                     }
                                 }
                             }
                             if (actionsInLoop.get(idx).equals("dynamite")) {
-                                if (commandCount.get("dynamite") > 0 && commandCount.get(actionsInLoop.get(idx + 1)) > 0) {
+                                if (commandCount.get("dynamite") > 0 && commandCount.get(actionsInLoop.get(idx + 1)) > 0 && !loopHasRun) {
                                     boolean isDoable = robot.throwDynamite(actionsInLoop.get(idx + 1));
-                                    if (isDoable && isReduceable) {
+                                    if (isDoable && !commandHasRun) {
                                         commandCount.replace("dynamite", commandCount.get("dynamite") - 1);
-                                        commandCount.replace(actionsInLoop.get(idx + 1), commandCount.get(actionsInLoop.get(idx + 1)) - 1);
-                                        isReduceable = false;
+                                        commandCount.replace(actionsInLoop.get(idx + 1), (commandCount.get(actionsInLoop.get(idx + 1)) - 1));
+                                        commandHasRun = true;
+                                        loopHasRun = true;
                                     } else if (robot.getIsReset()) {
                                         setOriginalCommandCount(levelDiff);
-                                    } else isReduceable = true;
+                                    }
+                                } else if (loopHasRun) {
+                                    robot.throwDynamite(actionsInLoop.get(idx + 1));
                                 }
                             }
                             if (actionsInLoop.get(idx).equals("bridge")) {
-                                if (commandCount.get("bridge") > 0 && commandCount.get(actionsInLoop.get(idx + 1)) > 0) {
+                                if (commandCount.get("bridge") > 0 && commandCount.get(actionsInLoop.get(idx + 1)) > 0 && !loopHasRun) {
                                     boolean isDoable = robot.buildBridge(actionsInLoop.get(idx + 1));
-                                    if (isDoable && isReduceable) {
+                                    if (isDoable && !commandHasRun) {
                                         commandCount.replace("bridge", commandCount.get("bridge") - 1);
                                         commandCount.replace(actionsInLoop.get(idx + 1), commandCount.get(actionsInLoop.get(idx + 1)) - 1);
-                                        isReduceable = false;
+                                        commandHasRun = true;
+                                        loopHasRun = true;
                                     } else if (robot.getIsReset()) {
                                         setOriginalCommandCount(levelDiff);
-                                    } else isReduceable = true;
+                                    }
+                                } else if (loopHasRun) {
+                                    robot.buildBridge(actionsInLoop.get(idx + 1));
                                 }
                             }
                         } else {
                             for (String direction : directions) {
                                 if (actionsInLoop.get(idx).equals(direction)) {
-                                    if (commandCount.get(direction) > 0) {
+                                    if (commandCount.get(direction) > 0 && !loopHasRun) {
                                         boolean isDoable = robot.go(direction);
-                                        if (isDoable && isReduceable) {
+                                        if (isDoable && !commandHasRun) {
                                             commandCount.replace(direction, commandCount.get(direction) - 1);
-                                            isReduceable = false;
-                                            if(currentLevel.getIsWon()) {
+                                            commandHasRun = true;
+                                            loopHasRun = true;
+                                            if (currentLevel.getIsWon()) {
                                                 stopBtn.getScene().setRoot(wonPage.getWonPane());
                                             }
                                         } else if (robot.getIsReset()) {
                                             setOriginalCommandCount(levelDiff);
-                                        } else isReduceable = true;
+                                        }
+                                    } else if (loopHasRun) {
+                                        robot.go(direction);
                                     }
-                                }
-                            }
-                            if (actionsInLoop.get(idx).equals("dynamite")) {
-                                if (commandCount.get("dynamite") > 0 && commandCount.get(actionsInLoop.get(idx + 1)) > 0) {
-                                    boolean isDoable = robot.throwDynamite(actionsInLoop.get(idx + 1));
-                                    if (isDoable && isReduceable) {
-                                        commandCount.replace("dynamite", commandCount.get("dynamite") - 1);
-                                        commandCount.replace(actionsInLoop.get(idx + 1), commandCount.get(actionsInLoop.get(idx + 1)) - 1);
-                                        isReduceable = false;
-                                    } else if (robot.getIsReset()) {
-                                        setOriginalCommandCount(levelDiff);
-                                    } else isReduceable = true;
-                                }
-                            }
-                            if (actionsInLoop.get(idx).equals("bridge")) {
-                                if (commandCount.get("bridge") > 0 && commandCount.get(actionsInLoop.get(idx + 1)) > 0) {
-                                    boolean isDoable = robot.buildBridge(actionsInLoop.get(idx + 1));
-                                    if (isDoable && isReduceable) {
-                                        commandCount.replace("bridge", commandCount.get("bridge") - 1);
-                                        commandCount.replace(actionsInLoop.get(idx + 1), commandCount.get(actionsInLoop.get(idx + 1)) - 1);
-                                        isReduceable = false;
-                                    } else if (robot.getIsReset()) {
-                                        setOriginalCommandCount(levelDiff);
-                                    } else isReduceable = true;
                                 }
                             }
                         }
@@ -435,13 +423,32 @@ public class FixedLevelsFX {
             }
             case "master" -> {
 
-                commandCount.replace("east", 4);
+                commandCount.replace("east", 10);
+                commandCount.replace("west", 10);
+                commandCount.replace("south", 10);
+                commandCount.replace("dynamite", 10);
+                commandCount.replace("bridge", 10);
+
+                loopCount = new int[][]{{10, 2}, {10, 3}};
+
+             /*   commandCount.replace("east", 4);
                 commandCount.replace("west", 2);
                 commandCount.replace("south", 4);
                 commandCount.replace("dynamite", 2);
                 commandCount.replace("bridge", 1);
 
-                loopCount = new int[][]{{1, 2}, {1, 3}};
+                loopCount = new int[][]{{1, 2}, {1, 3}}; */
+
+            }
+            case "infinite" -> {
+
+                commandCount.replace("east", 10);
+                commandCount.replace("west", 10);
+                commandCount.replace("south", 10);
+                commandCount.replace("dynamite", 10);
+                commandCount.replace("bridge", 10);
+
+                loopCount = new int[][]{{10, 2}, {10, 3}};
 
             }
             default -> throw new IllegalArgumentException("Level difficulty can only be novice/adept/expert/master.");

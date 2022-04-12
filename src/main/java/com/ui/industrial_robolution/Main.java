@@ -1,5 +1,8 @@
 package com.ui.industrial_robolution;
 
+import com.game.industrial_robolution.InfiniteLevel;
+import com.game.industrial_robolution.Level;
+import com.game.industrial_robolution.Tile;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
