@@ -53,7 +53,7 @@ public class MenuFX {
             rootPane.setHalignment(levelBtn, HPos.CENTER);
 
             levelBtn.setOnAction(e -> {
-                FixedLevelsFX fixedLevels = new FixedLevelsFX();
+                LevelsFX fixedLevels = new LevelsFX();
                 fixedLevels.drawLevel(level);
                 levelBtn.getScene().setRoot(fixedLevels.getLevelPane());
             });

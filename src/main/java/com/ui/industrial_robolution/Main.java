@@ -26,7 +26,7 @@ public class Main extends Application {
 
         //****** Scene ******
 
-        Scene scene = new Scene(layout, 1000, 800);
+        Scene scene = new Scene(layout, 1200, 800);
 
         //****** Title ******
 

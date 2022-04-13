@@ -1,14 +1,10 @@
 package com.ui.industrial_robolution;
 
 import com.game.industrial_robolution.*;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -16,10 +12,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Random;
 
-public class FixedLevelsFX {
+public class LevelsFX {
 
     private boolean dynamiteIsClicked = false;
     private boolean bridgeIsClicked = false;
@@ -32,14 +28,19 @@ public class FixedLevelsFX {
     private int loopTimeToUse;
 
     private YouWonFX wonPage = new YouWonFX();
+    private MenuFX menu = new MenuFX();
 
     private String levelDiff;
+
+    InfiniteLevel infiniteLevel = new InfiniteLevel();
 
     private GridPane levelPane;
     private Level currentLevel;
     private Tile[][] currentMatrix;
+    private boolean isInfinite;
     private Robot robot;
     private Label commandCountLabel;
+
     private LinkedHashMap<String, Integer> commandCount = new LinkedHashMap<String, Integer>() {{
         put("north", 0);
         put("east", 0);
@@ -65,14 +66,17 @@ public class FixedLevelsFX {
 
         //****** Get matrix ******
 
-        InfiniteLevel infiniteLevel = new InfiniteLevel();
 
         switch (levelDifficulty) {
             case "novice" -> currentLevel = FixedLevels.getNoviceLevel();
             case "adept" -> currentLevel = FixedLevels.getAdeptLevel();
             case "expert" -> currentLevel = FixedLevels.getExpertLevel();
             case "master" -> currentLevel = FixedLevels.getMasterLevel();
-            case "infinite" -> currentLevel = new Level(8, 8, 4, infiniteLevel.generateMatrix(8, 8, 4, true));
+            case "infinite" -> {
+                infiniteLevel.setSavedCol(infiniteLevel.generateSavedCol(9));
+                currentLevel = new Level(9, 9, 4, infiniteLevel.generateMatrix(9, 9, 4));
+                currentLevel.setInfinite(true);
+            }
             default -> throw new IllegalArgumentException("Level difficulty can only be novice/adept/expert/master/infinite.");
         }
 
@@ -172,6 +176,7 @@ public class FixedLevelsFX {
     private void bindActionToCommandBtn(String command, StackPane commandBtn, Label commandCountLabel) {
 
         robot = new Robot(currentLevel);
+        isInfinite = currentLevel.isInfinite();
 
         for (String direction : directions) {
             if (command.equals(direction)) {
@@ -185,12 +190,17 @@ public class FixedLevelsFX {
                                     if (isDoable) {
                                         commandCount.replace(direction, timeToUse - 1);
                                         commandCountLabel.setText(commandCount.get(direction) + " x");
-                                        if (currentLevel.getIsWon()) {
+                                        if (currentLevel.getIsWon() && !isInfinite) {
                                             commandBtn.getScene().setRoot(wonPage.getWonPane());
+                                        } else if (currentLevel.getIsWon() && isInfinite) {
+                                            setNewInfiniteMatrix();
+                                            addNewRandomCommands();
                                         }
-                                    } else if (robot.getIsReset()) {
+                                    } else if (robot.getIsReset() && !isInfinite) {
                                         setOriginalCommandCount(levelDiff);
                                         commandCountLabel.setText(commandCount.get(direction) + " x");
+                                    } else if (robot.isGoToMenu()) {
+                                        commandBtn.getScene().setRoot(menu.getRootPane());
                                     }
                                 }
                             } else {
@@ -209,9 +219,11 @@ public class FixedLevelsFX {
                                     int timetoUseDirection = commandCount.get(direction);
                                     commandCount.replace(direction, timetoUseDirection - 1);
                                     commandCountLabel.setText(commandCount.get(direction) + " x");
-                                } else if (robot.getIsReset()) {
+                                } else if (robot.getIsReset() && !isInfinite) {
                                     setOriginalCommandCount(levelDiff);
                                     commandCountLabel.setText(commandCount.get(direction) + " x");
+                                } else if (robot.isGoToMenu()) {
+                                    commandBtn.getScene().setRoot(menu.getRootPane());
                                 }
                             }
                         } else actionsInLoop.add(direction);
@@ -227,9 +239,11 @@ public class FixedLevelsFX {
                                     int timetoUseDirection = commandCount.get(direction);
                                     commandCount.replace(direction, timetoUseDirection - 1);
                                     commandCountLabel.setText(commandCount.get(direction) + " x");
-                                } else if (robot.getIsReset()) {
+                                } else if (robot.getIsReset() && !isInfinite) {
                                     setOriginalCommandCount(levelDiff);
                                     commandCountLabel.setText(commandCount.get(direction) + " x");
+                                } else if (robot.isGoToMenu()) {
+                                    commandBtn.getScene().setRoot(menu.getRootPane());
                                 }
                             }
                         } else actionsInLoop.add(direction);
@@ -316,10 +330,15 @@ public class FixedLevelsFX {
                                             commandCount.replace(direction, commandCount.get(direction) - 1);
                                             commandHasRun = true;
                                             loopHasRun = true;
-                                            if (currentLevel.getIsWon()) {
+                                            if (currentLevel.getIsWon() && !isInfinite) {
                                                 stopBtn.getScene().setRoot(wonPage.getWonPane());
+                                            } else if (currentLevel.getIsWon() && isInfinite) {
+                                                setNewInfiniteMatrix();
+                                                addNewRandomCommands();
                                             }
-                                        } else if (robot.getIsReset()) {
+                                        } else if (robot.isGoToMenu()) {
+                                            stopBtn.getScene().setRoot(menu.getRootPane());
+                                        } else if (robot.getIsReset() && !isInfinite) {
                                             setOriginalCommandCount(levelDiff);
                                         }
                                     } else if (loopHasRun) {
@@ -335,7 +354,9 @@ public class FixedLevelsFX {
                                         commandCount.replace(actionsInLoop.get(idx + 1), (commandCount.get(actionsInLoop.get(idx + 1)) - 1));
                                         commandHasRun = true;
                                         loopHasRun = true;
-                                    } else if (robot.getIsReset()) {
+                                    } else if (robot.isGoToMenu()) {
+                                        stopBtn.getScene().setRoot(menu.getRootPane());
+                                    } else if (robot.getIsReset() && !isInfinite) {
                                         setOriginalCommandCount(levelDiff);
                                     }
                                 } else if (loopHasRun) {
@@ -350,7 +371,9 @@ public class FixedLevelsFX {
                                         commandCount.replace(actionsInLoop.get(idx + 1), commandCount.get(actionsInLoop.get(idx + 1)) - 1);
                                         commandHasRun = true;
                                         loopHasRun = true;
-                                    } else if (robot.getIsReset()) {
+                                    } else if (robot.isGoToMenu()) {
+                                        stopBtn.getScene().setRoot(menu.getRootPane());
+                                    } else if (robot.getIsReset() && !isInfinite) {
                                         setOriginalCommandCount(levelDiff);
                                     }
                                 } else if (loopHasRun) {
@@ -366,10 +389,15 @@ public class FixedLevelsFX {
                                             commandCount.replace(direction, commandCount.get(direction) - 1);
                                             commandHasRun = true;
                                             loopHasRun = true;
-                                            if (currentLevel.getIsWon()) {
+                                            if (currentLevel.getIsWon() && !isInfinite) {
                                                 stopBtn.getScene().setRoot(wonPage.getWonPane());
+                                            } else if (currentLevel.getIsWon() && isInfinite) {
+                                                setNewInfiniteMatrix();
+                                                addNewRandomCommands();
                                             }
-                                        } else if (robot.getIsReset()) {
+                                        } else if (robot.isGoToMenu()) {
+                                            stopBtn.getScene().setRoot(menu.getRootPane());
+                                        } else if (robot.getIsReset() && !isInfinite) {
                                             setOriginalCommandCount(levelDiff);
                                         }
                                     } else if (loopHasRun) {
@@ -441,18 +469,57 @@ public class FixedLevelsFX {
 
             }
             case "infinite" -> {
+                commandCount.replace("north", 20);
+                commandCount.replace("east", 20);
+                commandCount.replace("west", 20);
+                commandCount.replace("south", 20);
+                commandCount.replace("dynamite", 20);
+                commandCount.replace("bridge", 20);
 
-                commandCount.replace("east", 10);
-                commandCount.replace("west", 10);
-                commandCount.replace("south", 10);
-                commandCount.replace("dynamite", 10);
-                commandCount.replace("bridge", 10);
+                loopCount = new int[][]{{20, 2}, {20, 3}};
 
-                loopCount = new int[][]{{10, 2}, {10, 3}};
+              /*  int maxRandomInt = 10;
+
+
+                for(String direction : directions) {
+                    commandCount.replace(direction, new Random().nextInt(maxRandomInt));
+                }
+
+                commandCount.replace("dynamite", new Random().nextInt(maxRandomInt));
+                commandCount.replace("bridge", new Random().nextInt(maxRandomInt));
+
+
+
+                loopCount = new int[][]{{new Random().nextInt(maxRandomInt), 2}, {new Random().nextInt(maxRandomInt), 3}, {new Random().nextInt(maxRandomInt), 4}}; */
 
             }
             default -> throw new IllegalArgumentException("Level difficulty can only be novice/adept/expert/master.");
         }
+    }
+
+    private void setNewInfiniteMatrix() {
+        currentLevel.setMatrix(infiniteLevel.generateMatrix(currentLevel.getRow(), currentLevel.getCol(), currentLevel.getStationNumber()));
+        currentMatrix = currentLevel.getMatrix();
+        robot.goToStartingPos();
+        currentLevel.setIsWon(false);
+        colorMatrix(currentMatrix);
+    }
+
+    private void addNewRandomCommands() {
+
+        int maxRandomInt = 7;
+
+        for (String direction : directions) {
+            commandCount.replace(direction, commandCount.get(direction) + new Random().nextInt(maxRandomInt));
+        }
+
+        commandCount.replace("dynamite", commandCount.get("dynamite") + new Random().nextInt(maxRandomInt));
+        commandCount.replace("bridge", commandCount.get("bridge") + new Random().nextInt(maxRandomInt));
+
+        for (int idx = 0; idx < loopCount.length; idx++) {
+            loopCount[idx][0] += new Random().nextInt(maxRandomInt);
+        }
+
     }
 
     public GridPane getLevelPane() {

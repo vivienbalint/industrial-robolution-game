@@ -9,6 +9,8 @@ public class Robot implements IRobot {
     private final String msg = "You can't go that way :)";
     private boolean isDoable = false;
     private boolean isReset = false;
+    private boolean isInfinite = false;
+    private boolean goToMenu = false;
 
     public Robot(Level level) {
         this.level = level;
@@ -16,6 +18,10 @@ public class Robot implements IRobot {
 
     public boolean getIsReset() {
         return isReset;
+    }
+
+    public boolean isGoToMenu() {
+        return goToMenu;
     }
 
     public void setReset(boolean reset) {
@@ -28,18 +34,31 @@ public class Robot implements IRobot {
         levelMatrix = level.getMatrix();
         matrixRow = level.getRow();
         matrixCol = level.getCol();
+        isInfinite = level.isInfinite();
         int[] pos = {0, 0};
 
-        outer:
-        for (int row = 0; row < matrixRow; row++) {
-            for (int col = 0; col < matrixCol; col++) {
-                if (levelMatrix[row][col].getType().equals("station")) {
+        if(!isInfinite) {
+            outer:
+            for (int row = 0; row < matrixRow; row++) {
+                for (int col = 0; col < matrixCol; col++) {
+                    if (levelMatrix[row][col].getType().equals("station")) {
+                        pos[0] = row;
+                        pos[1] = col;
+                        levelMatrix[row][col].setColor("sienna");
+                        level.setStationNumberBuiltOn(1);
+                        level.setPos(pos);
+                        break outer;
+                    }
+                }
+            }
+        } else {
+            for(int row = 0; row < matrixRow; row++) {
+                if(levelMatrix[row][0].getType().equals("station")) {
                     pos[0] = row;
-                    pos[1] = col;
-                    levelMatrix[row][col].setColor("sienna");
+                    pos[1] = 0;
+                    levelMatrix[row][0].setColor("sienna");
                     level.setStationNumberBuiltOn(1);
                     level.setPos(pos);
-                    break outer;
                 }
             }
         }
@@ -51,6 +70,7 @@ public class Robot implements IRobot {
         levelMatrix = level.getMatrix();
         matrixRow = level.getRow();
         matrixCol = level.getCol();
+        isInfinite = level.isInfinite();
         int[] pos = level.getPos();
         int row = pos[0];
         int col = pos[1];
@@ -70,11 +90,17 @@ public class Robot implements IRobot {
                             }
                         } else levelMatrix[row - 1][col].setColor("forestGreen");
                     } else if (levelMatrix[row - 1][col].getType().equals("water")) {
-                        setOriginalColor();
-                        goToStartingPos();
-                        isDoable = false;
-                        setReset(true);
-                    } else {
+                        if(!isInfinite) {
+                            setOriginalColor();
+                            goToStartingPos();
+                            isDoable = false;
+                            setReset(true);
+                        } else {
+                            goToStartingPos();
+                            isDoable = false;
+                            goToMenu = true;
+                        }
+                    }else {
                         System.out.println(msg);
                         isDoable = false;
                     }
@@ -97,11 +123,17 @@ public class Robot implements IRobot {
                             }
                         } else levelMatrix[row][col + 1].setColor("forestGreen");
                     } else if (levelMatrix[row][col + 1].getType().equals("water")) {
-                        setOriginalColor();
-                        goToStartingPos();
-                        isDoable = false;
-                        setReset(true);
-                    } else {
+                        if(!isInfinite) {
+                            setOriginalColor();
+                            goToStartingPos();
+                            isDoable = false;
+                            setReset(true);
+                        } else {
+                            goToStartingPos();
+                            isDoable = false;
+                            goToMenu = true;
+                        }
+                    }else {
                         System.out.println(msg);
                         isDoable = false;
                     }
@@ -124,10 +156,16 @@ public class Robot implements IRobot {
                             }
                         } else levelMatrix[row][col - 1].setColor("forestGreen");
                     } else if (levelMatrix[row][col - 1].getType().equals("water")) {
-                        setOriginalColor();
-                        goToStartingPos();
-                        isDoable = false;
-                        setReset(true);
+                        if(!isInfinite) {
+                            setOriginalColor();
+                            goToStartingPos();
+                            isDoable = false;
+                            setReset(true);
+                        } else {
+                            goToStartingPos();
+                            isDoable = false;
+                            goToMenu = true;
+                        }
                     } else {
                         System.out.println(msg);
                         isDoable = false;
@@ -151,10 +189,16 @@ public class Robot implements IRobot {
                             }
                         } else levelMatrix[row + 1][col].setColor("forestGreen");
                     } else if (levelMatrix[row + 1][col].getType().equals("water")) {
-                        setOriginalColor();
-                        goToStartingPos();
-                        isDoable = false;
-                        setReset(true);
+                        if(!isInfinite) {
+                            setOriginalColor();
+                            goToStartingPos();
+                            isDoable = false;
+                            setReset(true);
+                        } else {
+                            goToStartingPos();
+                            isDoable = false;
+                            goToMenu = true;
+                        }
                     } else {
                         System.out.println(msg);
                         isDoable = false;

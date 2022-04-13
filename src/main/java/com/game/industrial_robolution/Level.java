@@ -8,18 +8,19 @@ public class Level {
     private int stationNumberBuiltOn = 0;
     private Tile[][] matrix;
     private int[] pos = new int[]{0, 0};
+    private boolean isInfinite = false;
     private boolean isWon = false;
 
     //****** Constructor ******
 
     public Level(int row, int col, int stationNumber, Tile[][] matrix) {
-        if (row > 5 && row < 9 && col > 5 && col < 9 && stationNumber > 1 && stationNumber < 6 && matrix.length == row && matrix[0].length == col) {
+        if (row > 5 && row < 11 && col > 5 && col < 11 && stationNumber > 1 && stationNumber < 6 && matrix.length == row && matrix[0].length == col) {
             this.row = row;
             this.col = col;
             this.stationNumber = stationNumber;
             this.matrix = matrix;
         } else
-            throw new IllegalArgumentException("Row and Col must be between 6 and 8, stationNumber must be between 2 and 5");
+            throw new IllegalArgumentException("Row and Col must be between 6 and 10, stationNumber must be between 2 and 5");
     }
 
     //****** Setters ******
@@ -34,6 +35,10 @@ public class Level {
 
     public void setPos(int[] pos) {
         this.pos = pos;
+    }
+
+    public void setInfinite(boolean infinite) {
+        isInfinite = infinite;
     }
 
     public void setIsWon(boolean isWon) {
@@ -85,6 +90,10 @@ public class Level {
 
     public int[] getPos() {
         return pos;
+    }
+
+    public boolean isInfinite() {
+        return isInfinite;
     }
 
     public boolean getIsWon() {
