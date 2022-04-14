@@ -11,8 +11,8 @@ public class CommandsFX {
 
     private StackPane commandBtn;
 
-    public StackPane getCommandBtn(String command, int timeToUse) {
-        commandBtn = getEmptyBtn(timeToUse);
+    public StackPane getCommandBtn(String command) {
+        commandBtn = getEmptyBtn();
         Label commandBtnLabel = new Label();
         commandBtnLabel.setFont(Font.font("Agency FB", 18));
         commandBtnLabel.setStyle("-fx-text-fill: #343A40");
@@ -30,8 +30,8 @@ public class CommandsFX {
         return commandBtn;
     }
 
-    public StackPane getLoopBtn(int timeToUse, int sizeOfLoop) {
-        StackPane loopBtn = getEmptyBtn(timeToUse);
+    public StackPane getLoopBtn(int sizeOfLoop) {
+        StackPane loopBtn = getEmptyBtn();
         Label loopBtnLabel = new Label();
         loopBtnLabel.setFont(Font.font("Agency FB", 18));
         loopBtnLabel.setStyle("-fx-text-fill: #343A40");
@@ -40,8 +40,7 @@ public class CommandsFX {
         return loopBtn;
     }
 
-    private StackPane getEmptyBtn(int timeToUse) {
-        if (timeToUse >= 0 && timeToUse <= 20) {
+    private StackPane getEmptyBtn() {
             commandBtn = new StackPane();
             Rectangle rectangle = new Rectangle(80, 80, Color.valueOf("#eeeaa9"));
             commandBtn.getChildren().add(rectangle);
@@ -50,7 +49,6 @@ public class CommandsFX {
             rectangle.setArcHeight(80);
             rectangle.setStroke(Color.BLACK);
             return commandBtn;
-        } else throw new IllegalArgumentException("TimeToUse can only be between 0 and 20");
     }
 
 }

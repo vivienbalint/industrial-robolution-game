@@ -4,6 +4,7 @@ import com.game.industrial_robolution.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -109,6 +110,18 @@ public class LevelsFX {
             }
         }
         colorMatrix(matrix);
+        drawMenuBtn();
+    }
+
+    private void drawMenuBtn() {
+        Button menuBtn = new Button("MENU");
+        menuBtn.setFont(Font.font("Agency FB", 30));
+        menuBtn.setStyle("-fx-background-color: #73688b; -fx-text-fill: #eeeaa9");
+        levelPane.add(menuBtn, 2, 5);
+
+        menuBtn.setOnAction(e -> {
+            menuBtn.getScene().setRoot(menu.getRootPane());
+        });
     }
 
     private Rectangle getNodeByPos(int row, int col) {
@@ -139,7 +152,7 @@ public class LevelsFX {
             commandCountLabel.setStyle("-fx-text-fill: #eeeaa9");
             commandCountLabel.setPadding(new Insets(0, 40, 0, 0));
 
-            StackPane commandBtn = commandsFX.getCommandBtn(key, commandCount.get(key));
+            StackPane commandBtn = commandsFX.getCommandBtn(key);
 
             levelPane.add(commandBtn, 0, row);
             commandCountLabel.setText(commandCount.get(key) + " x");
@@ -157,7 +170,7 @@ public class LevelsFX {
             commandCountLabel.setStyle("-fx-text-fill: #eeeaa9");
             commandCountLabel.setPadding(new Insets(0, 40, 0, 0));
 
-            StackPane loopBtn = commandsFX.getLoopBtn(loopCount[arrayCount][0], loopCount[arrayCount][1]);
+            StackPane loopBtn = commandsFX.getLoopBtn(loopCount[arrayCount][1]);
 
             levelPane.add(loopBtn, 2, row);
             commandCountLabel.setText(loopCount[arrayCount][0] + " x");
@@ -167,7 +180,7 @@ public class LevelsFX {
 
             bindActionToLoopBtn(loopBtn, commandCountLabel, currentBtnTimeToLoop);
         }
-        StackPane stopBtn = commandsFX.getCommandBtn("stop", 20);
+        StackPane stopBtn = commandsFX.getCommandBtn("stop");
         levelPane.add(stopBtn, 2, row++);
 
         bindActionToStopBtn(stopBtn);
@@ -459,39 +472,16 @@ public class LevelsFX {
 
                 loopCount = new int[][]{{10, 2}, {10, 3}};
 
-             /*   commandCount.replace("east", 4);
-                commandCount.replace("west", 2);
-                commandCount.replace("south", 4);
-                commandCount.replace("dynamite", 2);
-                commandCount.replace("bridge", 1);
-
-                loopCount = new int[][]{{1, 2}, {1, 3}}; */
-
             }
             case "infinite" -> {
-                commandCount.replace("north", 20);
-                commandCount.replace("east", 20);
-                commandCount.replace("west", 20);
-                commandCount.replace("south", 20);
-                commandCount.replace("dynamite", 20);
-                commandCount.replace("bridge", 20);
-
-                loopCount = new int[][]{{20, 2}, {20, 3}};
-
-              /*  int maxRandomInt = 10;
-
-
-                for(String direction : directions) {
+                int maxRandomInt = 10;
+                for (String direction : directions) {
                     commandCount.replace(direction, new Random().nextInt(maxRandomInt));
                 }
-
                 commandCount.replace("dynamite", new Random().nextInt(maxRandomInt));
                 commandCount.replace("bridge", new Random().nextInt(maxRandomInt));
 
-
-
-                loopCount = new int[][]{{new Random().nextInt(maxRandomInt), 2}, {new Random().nextInt(maxRandomInt), 3}, {new Random().nextInt(maxRandomInt), 4}}; */
-
+                loopCount = new int[][]{{new Random().nextInt(maxRandomInt), 2}, {new Random().nextInt(maxRandomInt), 3}, {new Random().nextInt(maxRandomInt), 4}};
             }
             default -> throw new IllegalArgumentException("Level difficulty can only be novice/adept/expert/master.");
         }
