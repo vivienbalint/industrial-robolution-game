@@ -11,18 +11,24 @@ public class InfiniteLevel {
         this.savedCol = savedCol;
     }
 
+    /**
+     * Generál egy megadott tagszámú Stringekből álló tömböt.
+     *
+     * A tömb lehetséges értékeit a tileTypes változó tartalmazza.
+     * Pontosan egy "s" karaktert kell tartalmazzon a végső tömb, vagyis
+     * generálunk egy random indexet, ami értéke az "s" lesz.
+     * Utána végig iterálunk a megadott tagszámon, és feltöltjük a tömböt.
+     * Hogyha a getRandomIndex() metódus segítségével generált index a tileTypes-on belül
+     * "s" értéket vesz fel, akkor egészen addig generáljon új indexet, amíg mást nem dob.
+     * Ez az érték lesz a végső tömb rowCount indexen felvett értéke.
+     * @param row megadott tagszám, ilyen hosszú tömböt fogunk generálni
+     * @return egy Stringekből álló tömb
+     */
+
     public String[] generateSavedCol(int row) {
         String[] col = new String[row];
-        boolean isStation = false;
-        int randomInt = 0;
-
-        while (!isStation) {
-            if (tileTypes[getRandomIndex(tileTypes)].equals("s")) {
-                randomInt = new Random().nextInt(row);
-                col[randomInt] = "s";
-                isStation = true;
-            }
-        }
+        int randomInt = new Random().nextInt(row);
+        col[randomInt] = "s";
 
         for (int rowCount = 0; rowCount < row; rowCount++) {
             int randomIdx = getRandomIndex(tileTypes);
@@ -37,6 +43,22 @@ public class InfiniteLevel {
         return col;
     }
 
+    /**
+     * Generál egy Tile típusú értékekből álló mátrixot
+     *
+     * A LevelsFX osztály drawLevel() metódusában generálunk egy tömböt, ami el lesz mentve a savedCol változóban.
+     * Ennek a tömbnek az értékeivel meghívjuk a FixedLevels osztály getTile() metódusát, ami visszaad egy Tile típusú csempét,
+     * ezeket a csempéket bemásoljuk a végső mátrix bal szélére.
+     * Generálunk a generateSavedCol() metódus segítségével egy a mátrix soraival megegyező tömböt.
+     * A kapott csempéket bemásoljuk a végső mátrix jobb szélére.
+     * A mátrix további celláiba random generálunk további csempéket, figyelembe véve, hogy
+     * a "station" típusú csempék száma ne haladja meg a stationNumber paraméter által megadott számot.
+     * A mátrix jobb oldalára generált tömböt beállítjuk a savedCol változó helyére.
+     * @param row a mátrix sorainak száma
+     * @param col a mátrix oszlopainak száma
+     * @param stationNumber hány "station" típusú csempét tartalmazzon
+     * @return egy Tile típusú értékekből álló random mátrix
+     */
 
     public Tile[][] generateMatrix(int row, int col, int stationNumber) {
         int currentStationNumber = 2;

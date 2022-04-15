@@ -2,6 +2,14 @@ package com.game.industrial_robolution;
 
 public class FixedLevels {
 
+    /**
+     * Létrehoz egy új Tile típusú csempét
+     *
+     * A megadott típusok között switchel, hogyha nem a megadott típusok közül adtunk meg
+     * paraméterként, errort dob.
+     * @param type egy String típus, értéke lehet "r/w/f/s"
+     * @return egy új Tile típusú object
+     */
     public static Tile getTile(String type) {
         switch(type) {
             case "r" -> {
