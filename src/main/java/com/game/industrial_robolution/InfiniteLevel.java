@@ -11,7 +11,6 @@ public class InfiniteLevel {
         this.savedCol = savedCol;
     }
 
-
     public String[] generateSavedCol(int row) {
         String[] col = new String[row];
         boolean isStation = false;

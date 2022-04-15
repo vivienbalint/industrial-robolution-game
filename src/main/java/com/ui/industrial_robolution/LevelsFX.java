@@ -17,32 +17,9 @@ import java.util.LinkedHashMap;
 import java.util.Random;
 
 public class LevelsFX {
-
-    private boolean dynamiteIsClicked = false;
-    private boolean bridgeIsClicked = false;
-
-    private boolean isStopBtnClicked = false;
-    private boolean isLoopBtnClicked = false;
-
-    private int timeToUse;
-    private int timeToLoop;
-    private int loopTimeToUse;
-
-    private YouWonFX wonPage = new YouWonFX();
-    private MenuFX menu = new MenuFX();
-
-    private String currentLevelDifficulty;
-
-    InfiniteLevel infiniteLevel = new InfiniteLevel();
-
     private GridPane levelPane;
     private Level currentLevel;
     private Tile[][] currentMatrix;
-    private boolean isInfinite;
-    private Robot robot;
-    private Label commandCountLabel;
-
-    private CustomLevelList customLevelList = new CustomLevelList();
 
     private LinkedHashMap<String, Integer> commandCount = new LinkedHashMap<String, Integer>() {{
         put("north", 0);
@@ -54,10 +31,28 @@ public class LevelsFX {
     }};
 
     private ArrayList<String> actionsInLoop;
-
     private String[] directions = new String[]{"north", "east", "west", "south"};
-
     private int[][] loopCount;
+    private Label commandCountLabel;
+    private String currentLevelDifficulty;
+
+    private YouWonFX wonPage = new YouWonFX();
+    private MenuFX menu = new MenuFX();
+    private InfiniteLevel infiniteLevel = new InfiniteLevel();
+    private CustomLevelList customLevelList = new CustomLevelList();
+    private Robot robot;
+
+    private int timeToUse;
+    private int timeToLoop;
+    private int loopTimeToUse;
+
+    private boolean dynamiteIsClicked = false;
+    private boolean bridgeIsClicked = false;
+
+    private boolean isStopBtnClicked = false;
+    private boolean isLoopBtnClicked = false;
+
+    private boolean isInfinite;
 
     public void drawLevel(String levelDifficulty, int savedCustomLevelIndex) {
 
