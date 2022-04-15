@@ -12,7 +12,6 @@ import javafx.scene.text.Font;
 public class SetCustomLevelSizeFX {
     private final GridPane setCustomLevelSitePane;
 
-
     public SetCustomLevelSizeFX() {
 
         //****** Layout ******

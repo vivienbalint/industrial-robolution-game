@@ -13,7 +13,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class CustomLevelFX {
@@ -128,7 +127,6 @@ public class CustomLevelFX {
     }
 
     private void handleSave() {
-
         saveBtn.setOnAction(e -> {
                     matrix = generateMatrixFromSelectedFields();
                     if (stationNumber > 1 && stationNumber < 6) {
@@ -138,7 +136,6 @@ public class CustomLevelFX {
                         MenuFX menu = new MenuFX();
                         saveBtn.getScene().setRoot(menu.getRootPane());
                     } else throw new Error("Selected number of stations must be between 2 and 5.");
-
                 }
         );
     }
@@ -192,16 +189,16 @@ public class CustomLevelFX {
         int rowCount = 1;
 
         for (String command : commands) {
-                selectedField = getTextFieldByPos(rowCount, 1);
-                if (selectedField.getText() != null && !selectedField.getText().isEmpty()) {
-                    if (selectedField.getText().matches("^[0-9]*$")) {
-                        selectedCommandCount = Integer.parseInt(selectedField.getText());
-                        if (selectedCommandCount >= 0 && selectedCommandCount <= 10) {
-                            commandCount.put(command, selectedCommandCount);
-                        } else throw new Error("Number of commands must be between 0 and 10");
-
+            selectedField = getTextFieldByPos(rowCount, 1);
+            if (selectedField.getText() != null && !selectedField.getText().isEmpty()) {
+                if (selectedField.getText().matches("^[0-9]*$")) {
+                    selectedCommandCount = Integer.parseInt(selectedField.getText());
+                    if (selectedCommandCount >= 0 && selectedCommandCount <= 10) {
+                        commandCount.put(command, selectedCommandCount);
                     } else throw new Error("Number of commands must be between 0 and 10");
-                } else throw new Error("Input can not be empty!");
+
+                } else throw new Error("Number of commands must be between 0 and 10");
+            } else throw new Error("Input can not be empty!");
             rowCount++;
         }
 

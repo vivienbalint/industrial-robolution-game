@@ -17,6 +17,8 @@ public class MenuFX {
     private final GridPane rootPane;
     private Button levelBtn;
 
+    private int savedCustomLevelIdx = 0;
+
     public MenuFX() {
 
         //****** Layout ******
@@ -55,39 +57,46 @@ public class MenuFX {
             GridPane.setHalignment(levelBtn, HPos.CENTER);
 
             levelBtn.setOnAction(e -> {
-                LevelsFX fixedLevels = new LevelsFX();
-                fixedLevels.drawLevel(level);
-                levelBtn.getScene().setRoot(fixedLevels.getLevelPane());
+                LevelsFX levelsFx = new LevelsFX();
+                levelsFx.drawLevel(level, 0);
+                levelBtn.getScene().setRoot(levelsFx.getLevelPane());
             });
         }
 
-        Button makeCustomLevelBtn = new Button("MAKE YOUR OWN");
-        makeCustomLevelBtn.setFont(Font.font("Agency FB", 30));
-        makeCustomLevelBtn.setStyle("-fx-background-color: #73688b; -fx-text-fill: #eeeaa9");
-        rootPane.add(makeCustomLevelBtn, 1, 3);
-        GridPane.setColumnSpan(makeCustomLevelBtn, 5);
-        GridPane.setHalignment(makeCustomLevelBtn, HPos.CENTER);
-
-        makeCustomLevelBtn.setOnAction(e -> {
-            SetCustomLevelSizeFX customLevel = new SetCustomLevelSizeFX();
-            makeCustomLevelBtn.getScene().setRoot(customLevel.getSetCustomLevelSitePane());
-        });
-
         CustomLevelList customLevelList = new CustomLevelList();
-        customLevelList.printLevel();
-        if(!customLevelList.getSavedCustomLevels().isEmpty()) {
-            ArrayList<CustomLevel> levelList = customLevelList.getSavedCustomLevels();
-            int idx = 1;
-            for(CustomLevel level : levelList) {
-                Button customLevelBtn = new Button("SAVED " + idx);
-                customLevelBtn.setFont(Font.font("Agency FB", 30));
-                customLevelBtn.setStyle("-fx-background-color: #73688b; -fx-text-fill: #eeeaa9");
-                rootPane.add(customLevelBtn, idx, 4);
-                idx++;
-            }
+
+        if (customLevelList.getSavedCustomLevels().isEmpty() || customLevelList.getSavedCustomLevels().size() < 6) {
+            Button makeCustomLevelBtn = new Button("MAKE YOUR OWN");
+            makeCustomLevelBtn.setFont(Font.font("Agency FB", 30));
+            makeCustomLevelBtn.setStyle("-fx-background-color: #73688b; -fx-text-fill: #eeeaa9");
+            rootPane.add(makeCustomLevelBtn, 1, 3);
+            GridPane.setColumnSpan(makeCustomLevelBtn, 5);
+            GridPane.setHalignment(makeCustomLevelBtn, HPos.CENTER);
+
+            makeCustomLevelBtn.setOnAction(e -> {
+                SetCustomLevelSizeFX makeCustomLevel = new SetCustomLevelSizeFX();
+                makeCustomLevelBtn.getScene().setRoot(makeCustomLevel.getSetCustomLevelSitePane());
+            });
         }
 
+        if (!customLevelList.getSavedCustomLevels().isEmpty()) {
+            ArrayList<CustomLevel> levelList = customLevelList.getSavedCustomLevels();
 
+            for (CustomLevel ignored : levelList) {
+                Button customLevelBtn = new Button("SAVED " + (savedCustomLevelIdx + 1));
+                customLevelBtn.setFont(Font.font("Agency FB", 30));
+                customLevelBtn.setStyle("-fx-background-color: #73688b; -fx-text-fill: #eeeaa9");
+                rootPane.add(customLevelBtn, savedCustomLevelIdx + 1, 4);
+
+                savedCustomLevelIdx++;
+                customLevelBtn.setOnAction(e -> {
+                    LevelsFX levelsFX = new LevelsFX();
+                    levelsFX.drawLevel("custom", savedCustomLevelIdx);
+                    customLevelBtn.getScene().setRoot(levelsFX.getLevelPane());
+                });
+
+            }
+        }
     }
 
     public GridPane getRootPane() {

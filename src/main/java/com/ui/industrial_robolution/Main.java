@@ -1,8 +1,5 @@
 package com.ui.industrial_robolution;
 
-import com.game.industrial_robolution.InfiniteLevel;
-import com.game.industrial_robolution.Level;
-import com.game.industrial_robolution.Tile;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -43,7 +40,7 @@ public class Main extends Application {
         startBtn.setFont(Font.font("Agency FB", 30));
 
         startBtn.setStyle("-fx-background-color: #73688b; -fx-text-fill: #eeeaa9");
-        layout.setHalignment(startBtn, HPos.CENTER);
+        GridPane.setHalignment(startBtn, HPos.CENTER);
 
         startBtn.setOnAction(e -> {
             MenuFX menu = new MenuFX();

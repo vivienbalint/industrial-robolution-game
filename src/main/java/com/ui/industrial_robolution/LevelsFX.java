@@ -31,7 +31,7 @@ public class LevelsFX {
     private YouWonFX wonPage = new YouWonFX();
     private MenuFX menu = new MenuFX();
 
-    private String levelDiff;
+    private String currentLevelDifficulty;
 
     InfiniteLevel infiniteLevel = new InfiniteLevel();
 
@@ -41,6 +41,8 @@ public class LevelsFX {
     private boolean isInfinite;
     private Robot robot;
     private Label commandCountLabel;
+
+    private CustomLevelList customLevelList = new CustomLevelList();
 
     private LinkedHashMap<String, Integer> commandCount = new LinkedHashMap<String, Integer>() {{
         put("north", 0);
@@ -57,7 +59,7 @@ public class LevelsFX {
 
     private int[][] loopCount;
 
-    public void drawLevel(String levelDifficulty) {
+    public void drawLevel(String levelDifficulty, int savedCustomLevelIndex) {
 
         //****** Layout ******
 
@@ -78,7 +80,17 @@ public class LevelsFX {
                 currentLevel = new Level(9, 9, 4, infiniteLevel.generateMatrix(9, 9, 4));
                 currentLevel.setInfinite(true);
             }
-            default -> throw new IllegalArgumentException("Level difficulty can only be novice/adept/expert/master/infinite.");
+            case "custom" -> {
+                ArrayList<CustomLevel> savedLevels = customLevelList.getSavedCustomLevels();
+                if(savedCustomLevelIndex > 0 && savedCustomLevelIndex <= savedLevels.size()) {
+                    for (int idx = 0; idx < 5; idx++) {
+                        if (savedCustomLevelIndex - 1 == idx) {
+                            currentLevel = savedLevels.get(idx);
+                        }
+                    }
+                } else throw new IllegalArgumentException("There is no level with this number!");
+            }
+            default -> throw new IllegalArgumentException("Level difficulty can only be novice/adept/expert/master/infinite/custom.");
         }
 
         currentMatrix = currentLevel.getMatrix();
@@ -96,7 +108,7 @@ public class LevelsFX {
 
         drawCommands();
 
-        levelDiff = levelDifficulty;
+        currentLevelDifficulty = levelDifficulty;
     }
 
     private void drawMatrix(Tile[][] matrix) {
@@ -210,7 +222,7 @@ public class LevelsFX {
                                             addNewRandomCommands();
                                         }
                                     } else if (robot.getIsReset() && !isInfinite) {
-                                        setOriginalCommandCount(levelDiff);
+                                        setOriginalCommandCount(currentLevelDifficulty);
                                         commandCountLabel.setText(commandCount.get(direction) + " x");
                                     } else if (robot.isGoToMenu()) {
                                         commandBtn.getScene().setRoot(menu.getRootPane());
@@ -233,7 +245,7 @@ public class LevelsFX {
                                     commandCount.replace(direction, timetoUseDirection - 1);
                                     commandCountLabel.setText(commandCount.get(direction) + " x");
                                 } else if (robot.getIsReset() && !isInfinite) {
-                                    setOriginalCommandCount(levelDiff);
+                                    setOriginalCommandCount(currentLevelDifficulty);
                                     commandCountLabel.setText(commandCount.get(direction) + " x");
                                 } else if (robot.isGoToMenu()) {
                                     commandBtn.getScene().setRoot(menu.getRootPane());
@@ -253,7 +265,7 @@ public class LevelsFX {
                                     commandCount.replace(direction, timetoUseDirection - 1);
                                     commandCountLabel.setText(commandCount.get(direction) + " x");
                                 } else if (robot.getIsReset() && !isInfinite) {
-                                    setOriginalCommandCount(levelDiff);
+                                    setOriginalCommandCount(currentLevelDifficulty);
                                     commandCountLabel.setText(commandCount.get(direction) + " x");
                                 } else if (robot.isGoToMenu()) {
                                     commandBtn.getScene().setRoot(menu.getRootPane());
@@ -352,7 +364,7 @@ public class LevelsFX {
                                         } else if (robot.isGoToMenu()) {
                                             stopBtn.getScene().setRoot(menu.getRootPane());
                                         } else if (robot.getIsReset() && !isInfinite) {
-                                            setOriginalCommandCount(levelDiff);
+                                            setOriginalCommandCount(currentLevelDifficulty);
                                         }
                                     } else if (loopHasRun) {
                                         robot.go(direction);
@@ -370,7 +382,7 @@ public class LevelsFX {
                                     } else if (robot.isGoToMenu()) {
                                         stopBtn.getScene().setRoot(menu.getRootPane());
                                     } else if (robot.getIsReset() && !isInfinite) {
-                                        setOriginalCommandCount(levelDiff);
+                                        setOriginalCommandCount(currentLevelDifficulty);
                                     }
                                 } else if (loopHasRun) {
                                     robot.throwDynamite(actionsInLoop.get(idx + 1));
@@ -387,7 +399,7 @@ public class LevelsFX {
                                     } else if (robot.isGoToMenu()) {
                                         stopBtn.getScene().setRoot(menu.getRootPane());
                                     } else if (robot.getIsReset() && !isInfinite) {
-                                        setOriginalCommandCount(levelDiff);
+                                        setOriginalCommandCount(currentLevelDifficulty);
                                     }
                                 } else if (loopHasRun) {
                                     robot.buildBridge(actionsInLoop.get(idx + 1));
@@ -411,7 +423,7 @@ public class LevelsFX {
                                         } else if (robot.isGoToMenu()) {
                                             stopBtn.getScene().setRoot(menu.getRootPane());
                                         } else if (robot.getIsReset() && !isInfinite) {
-                                            setOriginalCommandCount(levelDiff);
+                                            setOriginalCommandCount(currentLevelDifficulty);
                                         }
                                     } else if (loopHasRun) {
                                         robot.go(direction);
@@ -483,7 +495,11 @@ public class LevelsFX {
 
                 loopCount = new int[][]{{new Random().nextInt(maxRandomInt), 2}, {new Random().nextInt(maxRandomInt), 3}, {new Random().nextInt(maxRandomInt), 4}};
             }
-            default -> throw new IllegalArgumentException("Level difficulty can only be novice/adept/expert/master.");
+            case "custom" -> {
+                commandCount = ((CustomLevel)currentLevel).getCommandCount();
+                loopCount = ((CustomLevel)currentLevel).getLoopCount();
+            }
+            default -> throw new IllegalArgumentException("Level difficulty can only be novice/adept/expert/master/custom.");
         }
     }
 
@@ -509,7 +525,6 @@ public class LevelsFX {
         for (int idx = 0; idx < loopCount.length; idx++) {
             loopCount[idx][0] += new Random().nextInt(maxRandomInt);
         }
-
     }
 
     public GridPane getLevelPane() {

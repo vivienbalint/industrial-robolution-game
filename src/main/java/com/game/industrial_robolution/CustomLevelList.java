@@ -13,12 +13,4 @@ public class CustomLevelList {
         savedCustomLevels.add(level);
     }
 
-    public void printLevel() {
-        if(!savedCustomLevels.isEmpty()) {
-        CustomLevel level = savedCustomLevels.get(0);
-        System.out.println("level row = " + level.getRow());}
-        else System.out.println("miért ürressss");
-
-    }
-
 }
