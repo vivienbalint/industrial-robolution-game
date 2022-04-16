@@ -54,6 +54,24 @@ public class LevelsFX {
 
     private boolean isInfinite;
 
+    /**
+     * Elkészíti a kiválasztott szintet
+     *
+     * A nehézségi szint alapján létrehozzuk a pályát, és elmentjük a Level típusú currentLevel változóba
+     *
+     * A fix pályák esetén meghívjuk a korábban létrehozott pályákat a FixedLevels osztály getterei segítégével.
+     * A végtelen pálya esetében generálunk egy oszlopot az InfiniteLevel oszály generateSavedCol metódusa
+     * segítségevel, és elmentjük azt a setterrel.
+     * Utána csinálunk egy új pályát, amihez a generateMatrix() segítségével generálunk egy mátrixot, és
+     * beállítjuk a Level osztály isInfinite boolean változóját
+     *
+     * Az egyedi pályák esetén megkeressük a savedCustomLevels listában a paraméterként megadott indexen
+     * található szintet és elmentjük a currentLevel változóban.
+     * Ha nincs ilyen szint, errort dobunk.
+     *
+     * @param levelDifficulty a választott szintnehézség
+     * @param savedCustomLevelIndex az egyedi szintek esetében az elmentett szintek listájában az adott szint indexe
+     */
     public void drawLevel(String levelDifficulty, int savedCustomLevelIndex) {
 
         //****** Layout ******
@@ -77,7 +95,7 @@ public class LevelsFX {
             }
             case "custom" -> {
                 ArrayList<CustomLevel> savedLevels = customLevelList.getSavedCustomLevels();
-                if(savedCustomLevelIndex > 0 && savedCustomLevelIndex <= savedLevels.size()) {
+                if (savedCustomLevelIndex > 0 && savedCustomLevelIndex <= savedLevels.size()) {
                     for (int idx = 0; idx < 5; idx++) {
                         if (savedCustomLevelIndex - 1 == idx) {
                             currentLevel = savedLevels.get(idx);
@@ -106,6 +124,11 @@ public class LevelsFX {
         currentLevelDifficulty = levelDifficulty;
     }
 
+    /**
+     * Megrajzolja és a GridPane típusú levelPane-hez adja a megadott mátrixot
+     *
+     * @param matrix egy Tile típusú csempékből álló mátrix
+     */
     private void drawMatrix(Tile[][] matrix) {
         for (int rowCounter = 0; rowCounter < currentLevel.getRow(); rowCounter++) {
             for (int colCounter = 0; colCounter < currentLevel.getCol(); colCounter++) {
@@ -120,6 +143,9 @@ public class LevelsFX {
         drawMenuBtn();
     }
 
+    /**
+     * Megrajzolja a menüre visszanavigáló gombot, és megnyomásakor visszaállítja az eredeti szintet
+     */
     private void drawMenuBtn() {
         Button menuBtn = new Button("MENU");
         menuBtn.setFont(Font.font("Agency FB", 30));
@@ -127,10 +153,19 @@ public class LevelsFX {
         levelPane.add(menuBtn, 2, 5);
 
         menuBtn.setOnAction(e -> {
+            robot.setOriginalColor();
+            robot.goToStartingPos();
             menuBtn.getScene().setRoot(menu.getRootPane());
         });
     }
 
+    /**
+     * A megadott koordináták alapján megkeresi a GridPane-ben a Rectangle típusú gyerekét, amint létezik
+     *
+     * @param row sorszám
+     * @param col oszlopszám
+     * @return az adott koordinátán található Rectangle, ha létezik, ellenkező esetben null
+     */
     private Rectangle getNodeByPos(int row, int col) {
         for (Node node : levelPane.getChildren()) {
             if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == col && node instanceof Rectangle) {
@@ -140,6 +175,11 @@ public class LevelsFX {
         return null;
     }
 
+    /**
+     * Kiszínezi a megadott mátrixot a Tile-ok getColor() metódusa segítségével
+     *
+     * @param matrix egy Tile típusú objectekből álló mátrix
+     */
     private void colorMatrix(Tile[][] matrix) {
         for (int rowCounter = 0; rowCounter < currentLevel.getRow(); rowCounter++) {
             for (int colCounter = 0; colCounter < currentLevel.getCol(); colCounter++) {
@@ -150,6 +190,9 @@ public class LevelsFX {
         }
     }
 
+    /**
+     * Megrajzolja a parancsokhoz tartozó gombokat és címkéket
+     */
     private void drawCommands() {
         CommandsFX commandsFX = new CommandsFX();
         int row = 0;
@@ -193,6 +236,50 @@ public class LevelsFX {
         bindActionToStopBtn(stopBtn);
     }
 
+    /**
+     * A parancsgombokhoz hozzárendeli a tényleges végrehajtható parancsokat
+     *
+     * Ha egy irányra rákattintunk, és előtte nem kattintottunk sem a dinamit, sem a híd, sem az ismétlés parancsra,
+     * akkor a timeToUse segéd változóban elmentjük a commandCount-ban eltárolt adott parancshoz tartozó
+     * végrehajtható számot.
+     * Ha ez a szám nagyobb nullánál, akkor használhatjuk a parancsot, ellenkező esetben nem történik semmi.
+     * Ezután ha a parancs végrehajtható, meghívjuk a Robot osztályból az adott irányra vonatkozó paraméterrel
+     * ellátott go() parancsot, és annak a visszatérési értékétől függően haladunk tovább.
+     * Ha a visszatérési értéke (a boolean isDoable változó) igaz, vagyis a parancs sikeresen végrehajtható,
+     * akkor a parancs lehetséges végrehajtási számából (a timeToUse változó) kivonunk eggyet,
+     * kicseréljük ezt a számot a commandCount változóban is, és a parancshoz tartozó címkét is frissítjük.
+     *
+     * Ha a parancs végrehajtása után a getIsWon() getter lekérésével megkapott boolean érték igaz, vagyis
+     * érintettünk a szinten minden "station" típusú csempét, akkor, ha a szintünk nem végtelen szint,
+     * átnavigálunk a YouWonFX osztályból meghívott oldalra, a játékot sikeresen megnyertük.
+     *
+     * Ha a szint végtelen típusú, akkor viszont generálunk egy új mátrixot a setNewInfiniteMatrix()
+     * metódus segítségével, és a megmaradt parancsok számához generálunk még újakat az addNewRandomCommands()
+     * metódus segítségével.
+     *
+     * Hogyha a parancs nem végrehajtható (az isDoable változó értéke false), akkor ha "water" típusú csempére
+     * sikerült lépnünk és a szint nem végtelen típusú, akkor a játékszabályoknak megfelelően újra kezdjük
+     * a pályát.
+     * Ha "water" típusú csempére léptünk és a szint végtelen típusú, akkor vége a játéknak, visszanavigálunk
+     * a menübe.
+     *
+     *
+     * Hogyha a dinamit, vagy a híd parancsra kattintottunk, de előtte nem kattintottunk egyik ismétlés
+     * parancsra sem, akkor, ha a lehetséges végrehajtási száma nagyobb, mint nulla, beállítjuk az adott
+     * parancshoz tartozó boolean változót igazra, és kivonunk eggyet a végrehajtási számából, és frissítjük
+     * a címkét.
+     *
+     * Ha valamelyik irányra kattintottunk, és előtte a dinamit vagy a híd is meg lett nyomva, akkor
+     * az adott parancshoz tartozó boolean változó értéket hamisra állítjuk, és végrehajtjuk a parancsot
+     * a go() metódus helyett a throwDynamite() vagy a buildBridge() metódussal.
+     *
+     * Ha bármelyik parancs gombra úgy kattintottunk, hogy előtte az ismétlés parancsot benyomtuk, akkor
+     * az adott parancsot hozzáadjuk az actionInLoop Stringekből álló ArrayList típusú változóhoz.
+     *
+     * @param command egy parancs
+     * @param commandBtn egy gombként funkcionáló StackPane az adott parancshoz
+     * @param commandCountLabel az adott parancshoz tartozó címke
+     */
     private void bindActionToCommandBtn(String command, StackPane commandBtn, Label commandCountLabel) {
 
         robot = new Robot(currentLevel);
@@ -303,13 +390,27 @@ public class LevelsFX {
         }
     }
 
+    /**
+     * Az ismétlés parancshoz tartozó gombokhoz rendeli a parancsot
+     *
+     * Attól függően melyik ismétlés gombra kattintunk, elmentjük a végrehajtási számát a loopTimeToUse segédváltozóban.
+     * Ha a végrehajtási száma nagyobb, mint nulla, akkor csinálnunk egy új Strinekből állő ArrayListet az actionsInLoop
+     * változóban.
+     * Az ismétlés parancshoz tartozó boolean változó értékét igazra állítjuk, a paraméterként megadott ismétlés számát
+     * elmentjük a timeToLoop segédváltozóban, a loopTimeToUse értékét csökkentjük eggyel.
+     * A loopCountban, az adott parancshoz tartozó végrehajtási értéket frissítjük a loopTimeToUse változó értékével,
+     * frissítjük a hozzátartozó címkét is.
+     *
+     * @param loopBtn egy gombként funkcionáló StackPane az adott ismétlés parancshoz
+     * @param commandCountLabel a parancshoz tartozó végrehajtási érték címkéje
+     * @param currentBtnTimeToLoop az adott ismétléshez tartozó ismétlés száma
+     */
     private void bindActionToLoopBtn(StackPane loopBtn, Label commandCountLabel, int currentBtnTimeToLoop) {
 
         loopBtn.setOnMouseClicked(e -> {
             for (int idx = 0; idx < loopCount.length; idx++) {
                 if (loopCount[idx][1] == currentBtnTimeToLoop) {
                     loopTimeToUse = loopCount[idx][0];
-                    loopCount[idx][0] = loopTimeToUse;
                 }
             }
             if (loopTimeToUse > 0) {
@@ -345,11 +446,12 @@ public class LevelsFX {
                                 if (actionsInLoop.get(idx).equals(direction) && !actionsInLoop.get(idx - 1).equals("dynamite") && !actionsInLoop.get(idx - 1).equals("bridge")) {
                                     if (commandCount.get(direction) > 0 && !loopHasRun) {
                                         boolean isDoable = robot.go(direction);
-                                        if (isDoable && !commandHasRun) {
-                                            int[] pos = currentLevel.getPos();
-                                            commandCount.replace(direction, commandCount.get(direction) - 1);
-                                            commandHasRun = true;
-                                            loopHasRun = true;
+                                        if (isDoable) {
+                                            if (!commandHasRun) {
+                                                commandCount.replace(direction, commandCount.get(direction) - 1);
+                                                commandHasRun = true;
+                                                loopHasRun = true;
+                                            }
                                             if (currentLevel.getIsWon() && !isInfinite) {
                                                 stopBtn.getScene().setRoot(wonPage.getWonPane());
                                             } else if (currentLevel.getIsWon() && isInfinite) {
@@ -405,10 +507,12 @@ public class LevelsFX {
                                 if (actionsInLoop.get(idx).equals(direction)) {
                                     if (commandCount.get(direction) > 0 && !loopHasRun) {
                                         boolean isDoable = robot.go(direction);
-                                        if (isDoable && !commandHasRun) {
-                                            commandCount.replace(direction, commandCount.get(direction) - 1);
-                                            commandHasRun = true;
-                                            loopHasRun = true;
+                                        if (isDoable) {
+                                            if (!commandHasRun) {
+                                                commandCount.replace(direction, commandCount.get(direction) - 1);
+                                                commandHasRun = true;
+                                                loopHasRun = true;
+                                            }
                                             if (currentLevel.getIsWon() && !isInfinite) {
                                                 stopBtn.getScene().setRoot(wonPage.getWonPane());
                                             } else if (currentLevel.getIsWon() && isInfinite) {
@@ -481,7 +585,7 @@ public class LevelsFX {
 
             }
             case "infinite" -> {
-                int maxRandomInt = 10;
+                int maxRandomInt = 15;
                 for (String direction : directions) {
                     commandCount.replace(direction, new Random().nextInt(maxRandomInt));
                 }
@@ -491,8 +595,8 @@ public class LevelsFX {
                 loopCount = new int[][]{{new Random().nextInt(maxRandomInt), 2}, {new Random().nextInt(maxRandomInt), 3}, {new Random().nextInt(maxRandomInt), 4}};
             }
             case "custom" -> {
-                commandCount = ((CustomLevel)currentLevel).getCommandCount();
-                loopCount = ((CustomLevel)currentLevel).getLoopCount();
+                commandCount = ((CustomLevel) currentLevel).getCommandCount();
+                loopCount = ((CustomLevel) currentLevel).getLoopCount();
             }
             default -> throw new IllegalArgumentException("Level difficulty can only be novice/adept/expert/master/custom.");
         }

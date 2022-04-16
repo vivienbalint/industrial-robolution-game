@@ -89,6 +89,14 @@ public class MenuFX {
         });
     }
 
+    /**
+     * Létrehozza az egyedi szintekhez tartozó gombokat
+     *
+     * A CustomLevelList osztály getSavedCustomLevels() gettere alapján megkapjuk az elmentett
+     * egyedi szintek listáját.
+     * Ezek alapján létrehozunk hozzájuk gombokat, és meghívjuk a LevelsFX osztályban
+     * található drawLevel() metódust.
+     */
     private void getCustomLevelBtn() {
         ArrayList<CustomLevel> levelList = customLevelList.getSavedCustomLevels();
 

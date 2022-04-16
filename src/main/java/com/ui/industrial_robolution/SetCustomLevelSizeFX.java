@@ -60,6 +60,14 @@ public class SetCustomLevelSizeFX {
         GridPane.setColumnSpan(ctnBtn, 7);
         GridPane.setHalignment(ctnBtn, HPos.CENTER);
 
+        /**
+         * A megadott sor és oszlop szám alapján csinál egy új felületet az egyedi szintek létrehozásához
+         *
+         * Ha a sor és oszlop TextField nem üres, és értékük szám, illetve 6 és 10 között van
+         * csinál egy új felületet, ellenkező esetben errort dob.
+         *
+         */
+
         ctnBtn.setOnAction(e -> {
             if(row.getText() != null && col.getText() != null && !row.getText().isEmpty() && !col.getText().isEmpty()) {
                 if(row.getText().matches("^[0-9]*$") && col.getText().matches("^[0-9]*$")) {

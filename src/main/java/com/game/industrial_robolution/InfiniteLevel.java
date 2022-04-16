@@ -13,7 +13,7 @@ public class InfiniteLevel {
 
     /**
      * Generál egy megadott tagszámú Stringekből álló tömböt.
-     *
+     * <p>
      * A tömb lehetséges értékeit a tileTypes változó tartalmazza.
      * Pontosan egy "s" karaktert kell tartalmazzon a végső tömb, vagyis
      * generálunk egy random indexet, ami értéke az "s" lesz.
@@ -21,31 +21,34 @@ public class InfiniteLevel {
      * Hogyha a getRandomIndex() metódus segítségével generált index a tileTypes-on belül
      * "s" értéket vesz fel, akkor egészen addig generáljon új indexet, amíg mást nem dob.
      * Ez az érték lesz a végső tömb rowCount indexen felvett értéke.
+     *
      * @param row megadott tagszám, ilyen hosszú tömböt fogunk generálni
      * @return egy Stringekből álló tömb
      */
 
     public String[] generateSavedCol(int row) {
-        String[] col = new String[row];
-        int randomInt = new Random().nextInt(row);
-        col[randomInt] = "s";
+        if (row > 5 && row < 11) {
+            String[] col = new String[row];
+            int randomInt = new Random().nextInt(row);
+            col[randomInt] = "s";
 
-        for (int rowCount = 0; rowCount < row; rowCount++) {
-            int randomIdx = getRandomIndex(tileTypes);
-            if (rowCount == randomInt) {
-                continue;
+            for (int rowCount = 0; rowCount < row; rowCount++) {
+                int randomIdx = getRandomIndex(tileTypes);
+                if (rowCount == randomInt) {
+                    continue;
+                }
+                while (tileTypes[randomIdx].equals("s")) {
+                    randomIdx = getRandomIndex(tileTypes);
+                }
+                col[rowCount] = tileTypes[randomIdx];
             }
-            while (tileTypes[randomIdx].equals("s")) {
-                randomIdx = getRandomIndex(tileTypes);
-            }
-            col[rowCount] = tileTypes[randomIdx];
-        }
-        return col;
+            return col;
+        } else throw new IllegalArgumentException("Row must be between 6 and 10.");
     }
 
     /**
      * Generál egy Tile típusú értékekből álló mátrixot
-     *
+     * <p>
      * A LevelsFX osztály drawLevel() metódusában generálunk egy tömböt, ami el lesz mentve a savedCol változóban.
      * Ennek a tömbnek az értékeivel meghívjuk a FixedLevels osztály getTile() metódusát, ami visszaad egy Tile típusú csempét,
      * ezeket a csempéket bemásoljuk a végső mátrix bal szélére.
@@ -54,8 +57,9 @@ public class InfiniteLevel {
      * A mátrix további celláiba random generálunk további csempéket, figyelembe véve, hogy
      * a "station" típusú csempék száma ne haladja meg a stationNumber paraméter által megadott számot.
      * A mátrix jobb oldalára generált tömböt beállítjuk a savedCol változó helyére.
-     * @param row a mátrix sorainak száma
-     * @param col a mátrix oszlopainak száma
+     *
+     * @param row           a mátrix sorainak száma
+     * @param col           a mátrix oszlopainak száma
      * @param stationNumber hány "station" típusú csempét tartalmazzon
      * @return egy Tile típusú értékekből álló random mátrix
      */

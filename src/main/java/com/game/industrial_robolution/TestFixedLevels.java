@@ -1,4 +1,4 @@
-package com.game.industrial_robolution.tests;
+package com.game.industrial_robolution;
 
 import com.game.industrial_robolution.FixedLevels;
 import com.game.industrial_robolution.Tile;

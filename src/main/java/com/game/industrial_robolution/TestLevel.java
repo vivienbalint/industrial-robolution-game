@@ -1,4 +1,4 @@
-package com.game.industrial_robolution.tests;
+package com.game.industrial_robolution;
 
 import com.game.industrial_robolution.Level;
 import com.game.industrial_robolution.Tile;
@@ -27,10 +27,10 @@ public class TestLevel {
     @Test
     @DisplayName("Testing constructors and getters with good values")
     public void testConstructorsAndGetters() {
-        testLevel = new Level(7, 7, 3, testMatrix);
+        testLevel = new Level(7, 7, 2, testMatrix);
         assertEquals(7, testLevel.getRow());
         assertEquals(7, testLevel.getCol());
-        assertEquals(3, testLevel.getStationNumber());
+        assertEquals(2, testLevel.getStationNumber());
         assertNotNull(testLevel.getMatrix());
         assertEquals(testMatrix, testLevel.getMatrix());
     }
@@ -38,7 +38,7 @@ public class TestLevel {
     @Test
     @DisplayName("Testing constructors and getters with bad values")
     public void testConstructorsAndGetters2() {
-        IllegalArgumentException err = assertThrows(IllegalArgumentException.class, () -> testLevel = new Level(4, 7, 3, testMatrix));
+        IllegalArgumentException err = assertThrows(IllegalArgumentException.class, () -> testLevel = new Level(4, 7, 2, testMatrix));
         assertEquals("Row and Col must be between 6 and 10, stationNumber must be between 2 and 5", err.getMessage());
     }
 }

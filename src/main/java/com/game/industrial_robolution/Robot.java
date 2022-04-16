@@ -28,6 +28,14 @@ public class Robot implements IRobot {
         isReset = reset;
     }
 
+    /**
+     * Megkeresi az adott mátrixban az első "station" típusú csempét, és beállítja a koordinátáit
+     *
+     * Ha az adott szint nem végtelen típusú, végig iterál az egész mátrixon,
+     * ha végtelen, akkor pedig tudjuk, hogy az első oszlopban biztosan van egy "station" típus, ezért
+     * csak azt az oszlopot figyeljük.
+     * Beállítja a színét, beállítja a koordinátákat es inkrementálja a stationNumberBuiltOn változót a Level osztályban.
+     */
     @Override
     public void goToStartingPos() {
 
@@ -64,6 +72,32 @@ public class Robot implements IRobot {
         }
     }
 
+    /**
+     * A megadott irányban lép egyet
+     *
+     * A kezdő koordinátákat lekérjük a Level osztályból a getPos() getter segítségével.
+     * A megadott irány szerint figyeljük a következő csempe állapotát, ha létezik.
+     * Ha a csempére lehet építeni, és a színe nem "forestGreen" (vagyis még nem építettünk rá),
+     * akkor beállítjuk a koordinátáit, beállítjuk az isDoable változót true-ra, vagyis hogy a lépés lehetséges
+     * (amire majd a parancsok számolásánál lesz szükség), illetve
+     * a színét beállítjuk "forestGreen"-re, vagyis hogy építünk rá.
+     * Viszont ha a csempére lehet építeni, de emellett "station" típusú is, akkor a színét átállítjuk "sienna"-ra,
+     * vagyis hogy arra a station-re építettünk, és inkrementáljuk a stationNumber változót.
+     *
+     * Hogyha a Level osztályból lekért getStationNumberBuiltOn() getter megegyezik a getStationNumber() getter
+     * számával, akkor a játékot megnyertük, ezért beállítjuk az isWon() boolean változó értékét true-ra.
+     *
+     * Hogyha a csempe típusa "water", akkor a játékszabályoknak megfelelően előlről kezdjük a szintet.
+     * Visszaállítjuk a csempék eredeti színeit a setOriginalColor() metódussal, és beállítjuk az eredeti
+     * kezdeti koordinátákat a goToStartingPos() metódussal.
+     *
+     * Ha a megadott szint végtelen típusú, akkor pedig vége a játéknak, és beállítjuk a goToMenu változót
+     * true-ra, ami segítségével a LevelsFX osztályban visszanavigálunk a menübe.
+     *
+     * Ha a lépés nem lehetséges, akkor kiíratjuk a msg változóban eltárolt üzenetet a konzolon.
+     * @param direction az irány amelyben lépnie kell a robotunknak, ha az irány nem megfelelő, errort dobunk.
+     * @return az isDoable boolean változó, vagyis hogy a lépés lehetséges-e vagy sem.
+     */
     @Override
     public boolean go(String direction) {
 
@@ -227,7 +261,7 @@ public class Robot implements IRobot {
         level.setStationNumberBuiltOn(level.getStationNumberBuiltOn() + 1);
     }
 
-    private void setOriginalColor() {
+    public void setOriginalColor() {
         levelMatrix = level.getMatrix();
         matrixRow = level.getRow();
         matrixCol = level.getCol();
@@ -250,6 +284,13 @@ public class Robot implements IRobot {
         }
     }
 
+    /**
+     * Beállítja az iránynak megfelelő következő csempe isBuildable változóját igazra és odalép
+     *
+     * @param type a csempe típusa, amit építhetőre akarunk állítani
+     * @param direction az irány amelybe lépni szeretnénk
+     * @return az isDoable boolean változó, vagyis hogy a lépés lehetséges-e vagy sem.
+     */
     private boolean setToBuildable(String type, String direction) {
 
         levelMatrix = level.getMatrix();

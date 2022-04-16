@@ -62,7 +62,6 @@ public class CustomLevelFX {
         drawMatrixComboBox();
     }
 
-
     private void drawCommandTiles() {
         CommandsFX commandsFX = new CommandsFX();
         StackPane commandTile;
@@ -126,6 +125,10 @@ public class CustomLevelFX {
         }
     }
 
+    /**
+     * Meghívja a segédmetódusokat és elnavigál a menüre, ha a kiválasztott csempék legalább
+     * 2 és maximum 5db "station" típust tartalmaznak, ellenkező esetben errort dob.
+     */
     private void handleSave() {
         saveBtn.setOnAction(e -> {
                     matrix = generateMatrixFromSelectedFields();
@@ -140,6 +143,13 @@ public class CustomLevelFX {
         );
     }
 
+    /**
+     * A megadott koordináták szerint visszaadja az ott található ComboBox-ot, ha létezik.
+     *
+     * @param row sorszám
+     * @param col oszlopszám
+     * @return egy ComboBox, ha létezik, ellenkező esetben null
+     */
     private ComboBox<String> getComboBoxByPos(int row, int col) {
         for (Node node : createLevelPane.getChildren()) {
             if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == col && node instanceof ComboBox) {
@@ -149,6 +159,13 @@ public class CustomLevelFX {
         return null;
     }
 
+    /**
+     * A megadott koordináták szerint visszaadja az ott található TextField-et, ha létezik.
+     *
+     * @param row sorszám
+     * @param col oszlopszám
+     * @return egy TextField, ha létezik, ellenkező esetben null
+     */
     private TextField getTextFieldByPos(int row, int col) {
         for (Node node : createLevelPane.getChildren()) {
             if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == col && node instanceof TextField) {
@@ -158,13 +175,21 @@ public class CustomLevelFX {
         return null;
     }
 
+    /**
+     * A választott típusok alapján visszaad egy Tile-okból álló mátrixot
+     * <p>
+     * A getComboBoxByPos() metódus alapján megkeresi az adott koordinátán lévő ComboBoxot, és
+     * ha az nem üres, akkor az értéke alapján létre hoz egy új Tile objectet a FixedLevels osztályon
+     * belül található getTile() metódus segítségével, és eltárolja azt az új mátrixban.
+     *
+     * @return egy Tile-okból álló választott mátrix
+     */
     private Tile[][] generateMatrixFromSelectedFields() {
         matrix = new Tile[row][col];
         for (int rowCount = 0; rowCount < row; rowCount++) {
             for (int colCount = 0; colCount < col; colCount++) {
                 ComboBox<String> selectedTile = getComboBoxByPos(rowCount + 1, colCount + 6);
-                assert selectedTile != null;
-                if (!selectedTile.getSelectionModel().isEmpty()) {
+                if (selectedTile != null && !selectedTile.getSelectionModel().isEmpty()) {
                     if (selectedTile.getValue().equals("Station")) {
                         matrix[rowCount][colCount] = FixedLevels.getTile("s");
                         stationNumber++;
@@ -182,6 +207,17 @@ public class CustomLevelFX {
         return matrix;
     }
 
+    /**
+     * Eltárolja a kiválasztott parancsok értékét
+     * <p>
+     * Végig iterál a lehetséges parancsokon, és megkeresi a hozzá tartozó TextField-et,
+     * a getTextFieldByPos() metódus segítségével.
+     * Ha a TextField nem üres, regex segítségével ellenőrizzük, hogy a beírt karakterek számok-e,
+     * és ha igen, akkor ellenőrizzük, hogy értékük 0 és 10 között van-e.
+     * Ha igen, akkor eltároljuk a commandCount LinkedHashMap típusú változóban.
+     * <p>
+     * Utána eltároljuk az ismétlés parancsokhoz megadott értékeket is.
+     */
     private void storeCommandCount() {
         TextField selectedField;
         int selectedCommandCount;
@@ -190,7 +226,8 @@ public class CustomLevelFX {
 
         for (String command : commands) {
             selectedField = getTextFieldByPos(rowCount, 1);
-            if (selectedField.getText() != null && !selectedField.getText().isEmpty()) {
+
+            if (selectedField != null && !selectedField.getText().isEmpty()) {
                 if (selectedField.getText().matches("^[0-9]*$")) {
                     selectedCommandCount = Integer.parseInt(selectedField.getText());
                     if (selectedCommandCount >= 0 && selectedCommandCount <= 10) {
@@ -198,13 +235,13 @@ public class CustomLevelFX {
                     } else throw new Error("Number of commands must be between 0 and 10");
 
                 } else throw new Error("Number of commands must be between 0 and 10");
-            } else throw new Error("Input can not be empty!");
+            } else throw new NullPointerException("Input can not be empty!");
             rowCount++;
         }
 
         for (rowCount = 1; rowCount < 4; rowCount++) {
             selectedField = getTextFieldByPos(rowCount, 4);
-            if (selectedField.getText() != null && !selectedField.getText().isEmpty()) {
+            if (selectedField != null && !selectedField.getText().isEmpty()) {
                 if (selectedField.getText().matches("^[0-9]*$")) {
                     selectedCommandCount = Integer.parseInt(selectedField.getText());
                     if (selectedCommandCount >= 0 && selectedCommandCount <= 10) {
@@ -213,10 +250,15 @@ public class CustomLevelFX {
                         timeToLoop++;
                     } else throw new Error("Number of commands must be between 0 and 10");
                 } else throw new Error("Number of commands must be between 0 and 10");
-            } else throw new Error("Input can not be empty!");
+            } else throw new NullPointerException("Input can not be empty!");
         }
     }
 
+    /**
+     * Elkészíti a kiválasztott paraméterek alapján az egyedi szintet,
+     * és hozzáadja a savedCustomLevels ArrayList típusú változóhoz a CustomLevelList osztályban
+     * található addSavedCustomLevel() metódus segítségével.
+     */
     private void createCustomLevel() {
         CustomLevelList custom = new CustomLevelList();
         custom.addSavedCustomLevel(new CustomLevel(row, col, stationNumber, matrix, commandCount, loopCount));
