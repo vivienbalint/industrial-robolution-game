@@ -1,6 +1,5 @@
 package com.game.industrial_robolution;
 
-import com.game.industrial_robolution.InfiniteLevel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

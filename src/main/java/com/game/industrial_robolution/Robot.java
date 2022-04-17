@@ -105,6 +105,7 @@ public class Robot implements IRobot {
         matrixRow = level.getRow();
         matrixCol = level.getCol();
         isInfinite = level.isInfinite();
+        setReset(false);
         int[] pos = level.getPos();
         int row = pos[0];
         int col = pos[1];
@@ -112,7 +113,7 @@ public class Robot implements IRobot {
         switch (direction) {
             case "north" -> {
                 if (row - 1 >= 0) {
-                    if (levelMatrix[row - 1][col].getIsBuildable() && !levelMatrix[row - 1][col].getColor().equals("forestGreen")) {
+                    if (levelMatrix[row - 1][col].getIsBuildable() && !levelMatrix[row - 1][col].getColor().equals("forestGreen") && !levelMatrix[row - 1][col].getColor().equals("sienna")) {
                         pos[0] = row - 1;
                         level.setPos(pos);
                         isDoable = true;
@@ -145,7 +146,7 @@ public class Robot implements IRobot {
             }
             case "east" -> {
                 if (col + 1 < matrixCol) {
-                    if (levelMatrix[row][col + 1].getIsBuildable() && !levelMatrix[row][col + 1].getColor().equals("forestGreen")) {
+                    if (levelMatrix[row][col + 1].getIsBuildable() && !levelMatrix[row][col + 1].getColor().equals("forestGreen") && !levelMatrix[row][col + 1].getColor().equals("sienna")) {
                         pos[1] = col + 1;
                         level.setPos(pos);
                         isDoable = true;
@@ -178,7 +179,7 @@ public class Robot implements IRobot {
             }
             case "west" -> {
                 if (col - 1 >= 0) {
-                    if (levelMatrix[row][col - 1].getIsBuildable() && !levelMatrix[row][col - 1].getColor().equals("forestGreen")) {
+                    if (levelMatrix[row][col - 1].getIsBuildable() && !levelMatrix[row][col - 1].getColor().equals("forestGreen") && !levelMatrix[row][col - 1].getColor().equals("sienna")) {
                         pos[1] = col - 1;
                         level.setPos(pos);
                         isDoable = true;
@@ -211,7 +212,7 @@ public class Robot implements IRobot {
             }
             case "south" -> {
                 if (row + 1 < level.getRow()) {
-                    if (levelMatrix[row + 1][col].getIsBuildable() && !levelMatrix[row + 1][col].getColor().equals("forestGreen")) {
+                    if (levelMatrix[row + 1][col].getIsBuildable() && !levelMatrix[row + 1][col].getColor().equals("forestGreen") && !levelMatrix[row + 1][col].getColor().equals("sienna")) {
                         pos[0] = row + 1;
                         level.setPos(pos);
                         isDoable = true;
@@ -273,9 +274,11 @@ public class Robot implements IRobot {
                 }
                 if (levelMatrix[row][col].getType().equals("rock")) {
                     levelMatrix[row][col].setColor("grey");
+                    levelMatrix[row][col].setBuildable(false);
                 }
                 if (levelMatrix[row][col].getType().equals("water")) {
                     levelMatrix[row][col].setColor("darkCyan");
+                    levelMatrix[row][col].setBuildable(false);
                 }
                 if (levelMatrix[row][col].getType().equals("field")) {
                     levelMatrix[row][col].setColor("lightGreen");

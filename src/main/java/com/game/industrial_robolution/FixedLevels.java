@@ -50,7 +50,7 @@ public class FixedLevels {
             {getTile("w"), getTile("s"), getTile("f"), getTile("r"), getTile("w"), getTile("r"), getTile("f")},
             {getTile("w"), getTile("f"), getTile("f"), getTile("f"), getTile("r"), getTile("r"), getTile("f")}};
 
-    private static final Tile[][] masterLevelMatrix = new Tile[][]{{getTile("f"), getTile("s"), getTile("w"), getTile("f"), getTile("f"), getTile("w"), getTile("w"), getTile("w")},
+    private static final Tile[][] masterLevelMatrix = new Tile[][]{{getTile("f"), getTile("s"), getTile("f"), getTile("f"), getTile("f"), getTile("w"), getTile("w"), getTile("w")},
             {getTile("f"), getTile("f"), getTile("w"), getTile("f"), getTile("f"), getTile("w"), getTile("w"), getTile("f")},
             {getTile("f"), getTile("f"), getTile("f"), getTile("w"), getTile("w"), getTile("w"), getTile("w"), getTile("w")},
             {getTile("f"), getTile("r"), getTile("w"), getTile("w"), getTile("s"), getTile("w"), getTile("w"), getTile("w")},

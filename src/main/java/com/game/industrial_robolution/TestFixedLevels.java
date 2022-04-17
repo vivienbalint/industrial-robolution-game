@@ -1,9 +1,8 @@
 package com.game.industrial_robolution;
 
-import com.game.industrial_robolution.FixedLevels;
-import com.game.industrial_robolution.Tile;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestFixedLevels {
@@ -27,9 +26,7 @@ public class TestFixedLevels {
     @Test
     @DisplayName("Testing getTile method with bad values 2")
     public void testGetTileMethod3() {
-        IllegalArgumentException err = assertThrows(IllegalArgumentException.class, () -> {
-            FixedLevels.getTile("k");
-        });
+        IllegalArgumentException err = assertThrows(IllegalArgumentException.class, () -> FixedLevels.getTile("k"));
         assertEquals("Type can only be r/w/f/s", err.getMessage());
     }
 }

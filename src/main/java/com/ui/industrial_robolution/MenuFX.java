@@ -18,8 +18,6 @@ public class MenuFX {
     private Button levelBtn;
     private final CustomLevelList customLevelList = new CustomLevelList();
 
-    private int savedCustomLevelIdx = 0;
-
     public MenuFX() {
 
         //****** Layout ******
@@ -44,7 +42,7 @@ public class MenuFX {
 
         getFixedLevelButtons();
 
-        if (customLevelList.getSavedCustomLevels().isEmpty() || customLevelList.getSavedCustomLevels().size() < 6) {
+        if (customLevelList.getSavedCustomLevels().isEmpty() || customLevelList.getSavedCustomLevels().size() < 5) {
             getMakeCustomLevelBtn();
         }
 
@@ -100,16 +98,16 @@ public class MenuFX {
     private void getCustomLevelBtn() {
         ArrayList<CustomLevel> levelList = customLevelList.getSavedCustomLevels();
 
-        for (CustomLevel ignored : levelList) {
-            Button customLevelBtn = new Button("SAVED " + (savedCustomLevelIdx + 1));
+        for (int savedCustomLevelIndex = 0; savedCustomLevelIndex < levelList.size(); savedCustomLevelIndex++) {
+            Button customLevelBtn = new Button("SAVED " + (savedCustomLevelIndex + 1));
             customLevelBtn.setFont(Font.font("Agency FB", 30));
             customLevelBtn.setStyle("-fx-background-color: #73688b; -fx-text-fill: #eeeaa9");
-            rootPane.add(customLevelBtn, savedCustomLevelIdx + 1, 4);
+            rootPane.add(customLevelBtn, savedCustomLevelIndex + 1, 4);
 
-            savedCustomLevelIdx++;
+            int finalSavedCustomLevelIndex = savedCustomLevelIndex;
             customLevelBtn.setOnAction(e -> {
                 LevelsFX levelsFX = new LevelsFX();
-                levelsFX.drawLevel("custom", savedCustomLevelIdx);
+                levelsFX.drawLevel("custom", finalSavedCustomLevelIndex);
                 customLevelBtn.getScene().setRoot(levelsFX.getLevelPane());
             });
         }

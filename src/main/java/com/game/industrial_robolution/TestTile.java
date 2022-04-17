@@ -1,9 +1,9 @@
 package com.game.industrial_robolution;
 
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import com.game.industrial_robolution.Tile;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestTile {
     private Tile testTile;
@@ -22,18 +22,14 @@ public class TestTile {
     @Test
     @DisplayName("Testing constructors with bad values")
     public void testConstructors() {
-        IllegalArgumentException err = assertThrows(IllegalArgumentException.class, () -> {
-            testTile = new Tile("wood", true, "peru");
-        });
+        IllegalArgumentException err = assertThrows(IllegalArgumentException.class, () -> testTile = new Tile("wood", true, "peru"));
         assertEquals("Type can only be water/rock/field/station", err.getMessage());
     }
 
     @Test
     @DisplayName("Testing constructors with bad values 2")
     public void testConstructors2() {
-        IllegalArgumentException err = assertThrows(IllegalArgumentException.class, () -> {
-            testTile = new Tile("station", true, "blue");
-        });
+        IllegalArgumentException err = assertThrows(IllegalArgumentException.class, () -> testTile = new Tile("station", true, "blue"));
         assertEquals("Color can only be darkCyan/grey/lightGreen/sienna/forestGreen", err.getMessage());
     }
 
@@ -49,9 +45,7 @@ public class TestTile {
     @DisplayName("Testing setter with bad values")
     public void testSetters2() {
         testTile = new Tile("water", false, "darkCyan");
-        IllegalArgumentException err = assertThrows(IllegalArgumentException.class, () -> {
-            testTile.setColor("blue");
-        });
+        IllegalArgumentException err = assertThrows(IllegalArgumentException.class, () -> testTile.setColor("blue"));
         assertEquals("Color can only be darkCyan/grey/lightGreen/peru/sienna/forestGreen", err.getMessage());
     }
 

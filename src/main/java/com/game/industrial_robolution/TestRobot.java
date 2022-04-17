@@ -1,8 +1,5 @@
 package com.game.industrial_robolution;
 
-import com.game.industrial_robolution.Level;
-import com.game.industrial_robolution.Robot;
-import com.game.industrial_robolution.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
