@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestFixedLevels {
     private final Tile testTile = new Tile("station", true, "peru");
-    private FixedLevels fixedLevels = new FixedLevels();
+    private final FixedLevels fixedLevels = new FixedLevels();
 
     @Test
     @DisplayName("Testing getTile method with good values")

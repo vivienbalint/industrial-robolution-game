@@ -1,8 +1,8 @@
 package com.game.industrial_robolution;
 
-public class Robot implements IRobot {
+public class Robot{
 
-    Level level;
+    final Level level;
     private Tile[][] levelMatrix;
     private int matrixRow;
     private int matrixCol;
@@ -36,7 +36,6 @@ public class Robot implements IRobot {
      * csak azt az oszlopot figyeljük.
      * Beállítja a színét, beállítja a koordinátákat es inkrementálja a stationNumberBuiltOn változót a Level osztályban.
      */
-    @Override
     public void goToStartingPos() {
 
         levelMatrix = level.getMatrix();
@@ -98,7 +97,6 @@ public class Robot implements IRobot {
      * @param direction az irány amelyben lépnie kell a robotunknak, ha az irány nem megfelelő, errort dobunk.
      * @return az isDoable boolean változó, vagyis hogy a lépés lehetséges-e vagy sem.
      */
-    @Override
     public boolean go(String direction) {
 
         levelMatrix = level.getMatrix();
@@ -248,12 +246,10 @@ public class Robot implements IRobot {
         return isDoable;
     }
 
-    @Override
     public boolean throwDynamite(String direction) {
         return isDoable = setToBuildable("rock", direction);
     }
 
-    @Override
     public boolean buildBridge(String direction) {
         return isDoable = setToBuildable("water", direction);
     }

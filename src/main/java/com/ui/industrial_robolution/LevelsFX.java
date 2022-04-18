@@ -31,16 +31,16 @@ public class LevelsFX {
     }};
 
     private ArrayList<String> actionsInLoop;
-    private String[] directions = new String[]{"north", "east", "west", "south"};
+    private final String[] directions = new String[]{"north", "east", "west", "south"};
     private int[][] loopCount;
     private Label commandCountLabel;
     private String currentLevelDifficulty;
 
-    private YouWonFX wonPage = new YouWonFX();
-    private MenuFX menu = new MenuFX();
-    private FixedLevels fixedLevels = new FixedLevels();
-    private InfiniteLevel infiniteLevel = new InfiniteLevel();
-    private CustomLevelList customLevelList = new CustomLevelList();
+    private final YouWonFX wonPage = new YouWonFX();
+    private final MenuFX menu = new MenuFX();
+    private final FixedLevels fixedLevels = new FixedLevels();
+    private final InfiniteLevel infiniteLevel = new InfiniteLevel();
+    private final CustomLevelList customLevelList = new CustomLevelList();
     private Robot robot;
 
     private int timeToUse;
@@ -50,7 +50,6 @@ public class LevelsFX {
     private boolean dynamiteIsClicked = false;
     private boolean bridgeIsClicked = false;
 
-    private boolean isStopBtnClicked = false;
     private boolean isLoopBtnClicked = false;
     private boolean isLoopBtnClickedInsideLoop = false;
 
@@ -468,10 +467,8 @@ public class LevelsFX {
         robot = new Robot(currentLevel);
 
         stopBtn.setOnMouseClicked(e -> {
-            isStopBtnClicked = true;
             int currentLoop = 0;
             boolean loopHasRun = false;
-            boolean commandHasRun = false;
             if (isLoopBtnClicked) {
                 isLoopBtnClicked = false;
 

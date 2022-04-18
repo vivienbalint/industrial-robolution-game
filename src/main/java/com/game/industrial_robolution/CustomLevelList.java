@@ -3,7 +3,7 @@ package com.game.industrial_robolution;
 import java.util.ArrayList;
 
 public class CustomLevelList {
-    private static ArrayList<CustomLevel> savedCustomLevels = new ArrayList<>();
+    private static final ArrayList<CustomLevel> savedCustomLevels = new ArrayList<>();
 
     public ArrayList<CustomLevel> getSavedCustomLevels() {
         return savedCustomLevels;
