@@ -510,9 +510,6 @@ public class LevelsFX {
                             if (actionsInLoop.get(idx).equals("dynamite") && idx < actionsInLoop.size() - 1) {
                                 if ((commandCount.get("dynamite") > 0 && commandCount.get(actionsInLoop.get(idx + 1)) > 0) || loopHasRun) {
                                     boolean isDoable = robot.throwDynamite(actionsInLoop.get(idx + 1));
-
-                                    System.out.println("dynamite in loop: how many: " + commandCount.get("dynamite") + " + direction : " + actionsInLoop.get(idx + 1) + " : " + commandCount.get(actionsInLoop.get(idx + 1)));
-
                                     if (isDoable && !loopHasRun) {
                                         commandCount.replace("dynamite", commandCount.get("dynamite") - 1);
                                         commandCount.replace(actionsInLoop.get(idx + 1), (commandCount.get(actionsInLoop.get(idx + 1)) - 1));
@@ -521,7 +518,7 @@ public class LevelsFX {
                                         try {
                                             stopBtn.getScene().setRoot(menu.getRootPane());
                                         } catch (NullPointerException err) {
-                                            System.out.println(err);
+                                            break outer;
                                         }
                                     } else if (robot.getIsReset() && !isInfinite) {
                                         setOriginalCommandCount(currentLevelDifficulty);
