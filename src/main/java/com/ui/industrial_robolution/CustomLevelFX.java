@@ -185,20 +185,21 @@ public class CustomLevelFX {
      * @return egy Tile-okból álló választott mátrix
      */
     private Tile[][] generateMatrixFromSelectedFields() {
+        FixedLevels fixedLevels = new FixedLevels();
         matrix = new Tile[row][col];
         for (int rowCount = 0; rowCount < row; rowCount++) {
             for (int colCount = 0; colCount < col; colCount++) {
                 ComboBox<String> selectedTile = getComboBoxByPos(rowCount + 1, colCount + 6);
                 if (selectedTile != null && !selectedTile.getSelectionModel().isEmpty()) {
                     if (selectedTile.getValue().equals("Station")) {
-                        matrix[rowCount][colCount] = FixedLevels.getTile("s");
+                        matrix[rowCount][colCount] = fixedLevels.getTile("s");
                         stationNumber++;
                     } else if (selectedTile.getValue().equals("Field")) {
-                        matrix[rowCount][colCount] = FixedLevels.getTile("f");
+                        matrix[rowCount][colCount] = fixedLevels.getTile("f");
                     } else if (selectedTile.getValue().equals("Rock")) {
-                        matrix[rowCount][colCount] = FixedLevels.getTile("r");
+                        matrix[rowCount][colCount] = fixedLevels.getTile("r");
                     } else if (selectedTile.getValue().equals("Water")) {
-                        matrix[rowCount][colCount] = FixedLevels.getTile("w");
+                        matrix[rowCount][colCount] = fixedLevels.getTile("w");
                     }
 
                 } else throw new NullPointerException("You must select a type on every box!");

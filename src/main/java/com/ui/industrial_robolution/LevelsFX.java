@@ -38,6 +38,7 @@ public class LevelsFX {
 
     private YouWonFX wonPage = new YouWonFX();
     private MenuFX menu = new MenuFX();
+    private FixedLevels fixedLevels = new FixedLevels();
     private InfiniteLevel infiniteLevel = new InfiniteLevel();
     private CustomLevelList customLevelList = new CustomLevelList();
     private Robot robot;
@@ -85,10 +86,10 @@ public class LevelsFX {
 
 
         switch (levelDifficulty) {
-            case "novice" -> currentLevel = FixedLevels.getNoviceLevel();
-            case "adept" -> currentLevel = FixedLevels.getAdeptLevel();
-            case "expert" -> currentLevel = FixedLevels.getExpertLevel();
-            case "master" -> currentLevel = FixedLevels.getMasterLevel();
+            case "novice" -> currentLevel = fixedLevels.getNoviceLevel();
+            case "adept" -> currentLevel = fixedLevels.getAdeptLevel();
+            case "expert" -> currentLevel = fixedLevels.getExpertLevel();
+            case "master" -> currentLevel = fixedLevels.getMasterLevel();
             case "infinite" -> {
                 infiniteLevel.setSavedCol(infiniteLevel.generateSavedCol(9));
                 currentLevel = new Level(9, 9, 4, infiniteLevel.generateMatrix(9, 9, 4));

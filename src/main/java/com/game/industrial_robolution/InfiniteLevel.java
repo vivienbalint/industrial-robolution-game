@@ -65,6 +65,7 @@ public class InfiniteLevel {
      */
 
     public Tile[][] generateMatrix(int row, int col, int stationNumber) {
+        FixedLevels fixedLevels = new FixedLevels();
         int currentStationNumber = 2;
         Tile[][] matrix = new Tile[row][col];
         int idx1 = 0;
@@ -75,21 +76,21 @@ public class InfiniteLevel {
             for (int colCount = 0; colCount < col; colCount++) {
                 String randomTileType = tileTypes[getRandomIndex(tileTypes)];
                 if (colCount == 0) {
-                    matrix[rowCount][colCount] = FixedLevels.getTile(savedCol[idx1]);
+                    matrix[rowCount][colCount] = fixedLevels.getTile(savedCol[idx1]);
                     idx1++;
                 } else if (colCount == col - 1) {
-                    matrix[rowCount][colCount] = FixedLevels.getTile(rightCol[idx2]);
+                    matrix[rowCount][colCount] = fixedLevels.getTile(rightCol[idx2]);
                     idx2++;
                 } else if (randomTileType.equals("s") && currentStationNumber < stationNumber) {
-                    matrix[rowCount][colCount] = FixedLevels.getTile(randomTileType);
+                    matrix[rowCount][colCount] = fixedLevels.getTile(randomTileType);
                     currentStationNumber++;
                 } else if (!randomTileType.equals("s")) {
-                    matrix[rowCount][colCount] = FixedLevels.getTile(randomTileType);
+                    matrix[rowCount][colCount] = fixedLevels.getTile(randomTileType);
                 } else {
                     while (randomTileType.equals("s")) {
                         randomTileType = tileTypes[getRandomIndex(tileTypes)];
                     }
-                    matrix[rowCount][colCount] = FixedLevels.getTile(randomTileType);
+                    matrix[rowCount][colCount] = fixedLevels.getTile(randomTileType);
                 }
             }
         }

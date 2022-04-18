@@ -1,17 +1,20 @@
 package com.game.industrial_robolution;
 
 public class FixedLevels {
+    public FixedLevels() {
+    }
 
     /**
      * Létrehoz egy új Tile típusú csempét
-     *
+     * <p>
      * A megadott típusok között switchel, hogyha nem a megadott típusok közül adtunk meg
      * paraméterként, errort dob.
+     *
      * @param type egy String típus, értéke lehet "r/w/f/s"
      * @return egy új Tile típusú object
      */
-    public static Tile getTile(String type) {
-        switch(type) {
+    public Tile getTile(String type) {
+        switch (type) {
             case "r" -> {
                 return new Tile("rock", false, "grey");
             }
@@ -28,21 +31,21 @@ public class FixedLevels {
         }
     }
 
-    private static final Tile[][] noviceLevelMatrix = new Tile[][]{{getTile("r"), getTile("r"), getTile("r"), getTile("s"), getTile("r"), getTile("r")},
+    private final Tile[][] noviceLevelMatrix = new Tile[][]{{getTile("r"), getTile("r"), getTile("r"), getTile("s"), getTile("r"), getTile("r")},
             {getTile("r"), getTile("r"), getTile("r"), getTile("r"), getTile("r"), getTile("f")},
             {getTile("f"), getTile("f"), getTile("f"), getTile("f"), getTile("w"), getTile("r")},
             {getTile("r"), getTile("r"), getTile("r"), getTile("r"), getTile("w"), getTile("w")},
             {getTile("r"), getTile("f"), getTile("r"), getTile("w"), getTile("w"), getTile("w")},
             {getTile("s"), getTile("f"), getTile("r"), getTile("r"), getTile("r"), getTile("f")}};
 
-    private static final Tile[][] adeptLevelMatrix = new Tile[][]{{getTile("s"), getTile("f"), getTile("f"), getTile("r"), getTile("r"), getTile("r")},
+    private final Tile[][] adeptLevelMatrix = new Tile[][]{{getTile("s"), getTile("f"), getTile("f"), getTile("r"), getTile("r"), getTile("r")},
             {getTile("f"), getTile("f"), getTile("f"), getTile("r"), getTile("r"), getTile("r")},
             {getTile("w"), getTile("w"), getTile("w"), getTile("w"), getTile("r"), getTile("f")},
             {getTile("w"), getTile("w"), getTile("w"), getTile("w"), getTile("w"), getTile("f")},
             {getTile("f"), getTile("w"), getTile("w"), getTile("w"), getTile("f"), getTile("r")},
             {getTile("f"), getTile("f"), getTile("s"), getTile("r"), getTile("f"), getTile("r")}};
 
-    private static final Tile[][] expertLevelMatrix = new Tile[][]{{getTile("s"), getTile("r"), getTile("r"), getTile("r"), getTile("r"), getTile("s"), getTile("r")},
+    private final Tile[][] expertLevelMatrix = new Tile[][]{{getTile("s"), getTile("r"), getTile("r"), getTile("r"), getTile("r"), getTile("s"), getTile("r")},
             {getTile("f"), getTile("f"), getTile("r"), getTile("r"), getTile("r"), getTile("r"), getTile("r")},
             {getTile("w"), getTile("r"), getTile("r"), getTile("f"), getTile("r"), getTile("f"), getTile("f")},
             {getTile("w"), getTile("w"), getTile("f"), getTile("r"), getTile("f"), getTile("f"), getTile("f")},
@@ -50,7 +53,7 @@ public class FixedLevels {
             {getTile("w"), getTile("s"), getTile("f"), getTile("r"), getTile("w"), getTile("r"), getTile("f")},
             {getTile("w"), getTile("f"), getTile("f"), getTile("f"), getTile("r"), getTile("r"), getTile("f")}};
 
-    private static final Tile[][] masterLevelMatrix = new Tile[][]{{getTile("f"), getTile("s"), getTile("f"), getTile("f"), getTile("f"), getTile("w"), getTile("w"), getTile("w")},
+    private final Tile[][] masterLevelMatrix = new Tile[][]{{getTile("f"), getTile("s"), getTile("f"), getTile("f"), getTile("f"), getTile("w"), getTile("w"), getTile("w")},
             {getTile("f"), getTile("f"), getTile("w"), getTile("f"), getTile("f"), getTile("w"), getTile("w"), getTile("f")},
             {getTile("f"), getTile("f"), getTile("f"), getTile("w"), getTile("w"), getTile("w"), getTile("w"), getTile("w")},
             {getTile("f"), getTile("r"), getTile("w"), getTile("w"), getTile("s"), getTile("w"), getTile("w"), getTile("w")},
@@ -59,19 +62,19 @@ public class FixedLevels {
             {getTile("s"), getTile("f"), getTile("w"), getTile("r"), getTile("r"), getTile("r"), getTile("f"), getTile("f")},
             {getTile("f"), getTile("f"), getTile("w"), getTile("f"), getTile("f"), getTile("r"), getTile("r"), getTile("s")}};
 
-    public static Level getNoviceLevel() {
+    public Level getNoviceLevel() {
         return new Level(6, 6, 2, noviceLevelMatrix);
     }
 
-    public static Level getAdeptLevel() {
+    public Level getAdeptLevel() {
         return new Level(6, 6, 2, adeptLevelMatrix);
     }
 
-    public static Level getExpertLevel() {
+    public Level getExpertLevel() {
         return new Level(7, 7, 3, expertLevelMatrix);
     }
 
-    public static Level getMasterLevel() {
+    public Level getMasterLevel() {
         return new Level(8, 8, 4, masterLevelMatrix);
     }
 
