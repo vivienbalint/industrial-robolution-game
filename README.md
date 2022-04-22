@@ -1,11 +1,8 @@
 Indítás
 ====
+Szükséges hozzá a legújabb JavaFX sdk.
 
-IntelliJ-ben a futtatáshoz be kell állítani a VM optionst:
-
-Az .idea \ libraries mappában található a JavaFX sdk (javafx-sdk-18) külön
-windowsra és linuxra is, azon belül a
-lib mappa elérési útvonalát kell megadni a VM options-ban:
+A futtatáshoz be kell állítani a VM optionst:
 
 * Run
 * Edit configurations
@@ -13,7 +10,7 @@ lib mappa elérési útvonalát kell megadni a VM options-ban:
 * Add VM options
 * Bemásolni:
 ```bash
---module-path "javafx sdk lib útvonala" --add-modules javafx.controls
+--module-path "javafx sdk/lib mappa útvonala" --add-modules javafx.controls
 ```
 * Save configurations
 * Main függvény indítása
