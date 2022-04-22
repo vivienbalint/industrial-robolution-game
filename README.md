@@ -2,6 +2,7 @@ Indítás
 ====
 Szükséges hozzá a legújabb JavaFX sdk.
 
+IntelliJ-ben:
 A futtatáshoz be kell állítani a VM optionst:
 
 * Run
