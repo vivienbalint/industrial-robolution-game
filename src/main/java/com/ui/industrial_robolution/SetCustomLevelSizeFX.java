@@ -2,6 +2,7 @@ package com.ui.industrial_robolution;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -74,17 +75,27 @@ public class SetCustomLevelSizeFX {
      * @param col a választott oszlophoz tartozó TextField
      */
     private void setActionOnCtnBtn(Button ctnBtn, TextField row, TextField col) {
+        Alert error = new Alert(Alert.AlertType.ERROR);
         ctnBtn.setOnAction(e -> {
             if(row.getText() != null && col.getText() != null && !row.getText().isEmpty() && !col.getText().isEmpty()) {
-                if(row.getText().matches("^[0-9]*$") && col.getText().matches("^[0-9]*$")) {
+                if (row.getText().matches("^[0-9]*$") && col.getText().matches("^[0-9]*$")) {
                     int rowCount = Integer.parseInt(row.getText());
                     int colCount = Integer.parseInt(col.getText());
-                    if(rowCount > 5 && rowCount < 11 && colCount > 5 && colCount < 11) {
+                    if (rowCount > 5 && rowCount < 11 && colCount > 5 && colCount < 11) {
                         CustomLevelFX customLevel = new CustomLevelFX(rowCount, colCount);
                         ctnBtn.getScene().setRoot(customLevel.getCreateLevelPane());
-                    } else throw new Error("Row and Col must be between 6 and 10");
-                } else throw new Error("Row and Col must be between 6 and 10");
-            } else throw new Error("Input can not be empty!");
+                    } else {
+                        error.setContentText("Row and Col must be between 6 and 10");
+                        error.show();
+                    }
+                } else {
+                    error.setContentText("Row and Col must be between 6 and 10");
+                    error.show();
+                }
+            } else{
+                error.setContentText("Input cannot be empty!");
+                error.show();
+            }
         });
     }
 

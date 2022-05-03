@@ -5,10 +5,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
@@ -130,6 +127,7 @@ public class CustomLevelFX {
      * 2 és maximum 5db "station" típust tartalmaznak, ellenkező esetben errort dob.
      */
     private void handleSave() {
+        Alert error = new Alert(Alert.AlertType.ERROR);
         saveBtn.setOnAction(e -> {
                     matrix = generateMatrixFromSelectedFields();
                     if (stationNumber > 1 && stationNumber < 6) {
@@ -138,7 +136,10 @@ public class CustomLevelFX {
 
                         MenuFX menu = new MenuFX();
                         saveBtn.getScene().setRoot(menu.getRootPane());
-                    } else throw new Error("Selected number of stations must be between 2 and 5.");
+                    } else {
+                        error.setContentText("Selected number of stations must be between 2 and 5.");
+                        error.show();
+                    }
                 }
         );
     }
@@ -185,6 +186,7 @@ public class CustomLevelFX {
      * @return egy Tile-okból álló választott mátrix
      */
     private Tile[][] generateMatrixFromSelectedFields() {
+        Alert error = new Alert(Alert.AlertType.ERROR);
         FixedLevels fixedLevels = new FixedLevels();
         matrix = new Tile[row][col];
         for (int rowCount = 0; rowCount < row; rowCount++) {
@@ -202,7 +204,10 @@ public class CustomLevelFX {
                         matrix[rowCount][colCount] = fixedLevels.getTile("w");
                     }
 
-                } else throw new NullPointerException("You must select a type on every box!");
+                } else {
+                    error.setContentText("You must select a type on every box!");
+                    error.show();
+                }
             }
         }
         return matrix;
@@ -225,6 +230,8 @@ public class CustomLevelFX {
         int timeToLoop = 2;
         int rowCount = 1;
 
+        Alert error = new Alert(Alert.AlertType.ERROR);
+
         for (String command : commands) {
             selectedField = getTextFieldByPos(rowCount, 1);
 
@@ -233,10 +240,18 @@ public class CustomLevelFX {
                     selectedCommandCount = Integer.parseInt(selectedField.getText());
                     if (selectedCommandCount >= 0 && selectedCommandCount <= 10) {
                         commandCount.put(command, selectedCommandCount);
-                    } else throw new Error("Number of commands must be between 0 and 10");
-
-                } else throw new Error("Number of commands must be between 0 and 10");
-            } else throw new NullPointerException("Input can not be empty!");
+                    } else {
+                        error.setContentText("Number of commands must be between 0 and 10");
+                        error.show();
+                    }
+                } else {
+                    error.setContentText("Number of commands must be between 0 and 10");
+                    error.show();
+                }
+            } else {
+                error.setContentText("Input can not be empty!");
+                error.show();
+            }
             rowCount++;
         }
 
@@ -249,9 +264,18 @@ public class CustomLevelFX {
                         loopCount[rowCount - 1][0] = selectedCommandCount;
                         loopCount[rowCount - 1][1] = timeToLoop;
                         timeToLoop++;
-                    } else throw new Error("Number of commands must be between 0 and 10");
-                } else throw new Error("Number of commands must be between 0 and 10");
-            } else throw new NullPointerException("Input can not be empty!");
+                    } else {
+                        error.setContentText("Number of commands must be between 0 and 10");
+                        error.show();
+                    }
+                } else {
+                    error.setContentText("Number of commands must be between 0 and 10");
+                    error.show();
+                }
+            } else {
+                error.setContentText("Input can not be empty!");
+                error.show();
+            }
         }
     }
 
